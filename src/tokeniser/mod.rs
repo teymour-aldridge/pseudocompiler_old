@@ -103,5 +103,7 @@ fn join(vec_a: &Vec<Token>, vec_b: &Vec<Token>) -> Vec<Token> {
 }
 
 pub fn tokenise(input: String) {
+    use std::sync::mpsc::channel;
+    let (rx, tx) = channel::<String>();
     let split_input: Vec<String> = input.lines().map(|x| String::from(x)).collect();
 }

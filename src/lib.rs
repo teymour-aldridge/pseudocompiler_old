@@ -1,3 +1,4 @@
+#![feature(core_panic)]
 mod tests;
 mod tokeniser;
 

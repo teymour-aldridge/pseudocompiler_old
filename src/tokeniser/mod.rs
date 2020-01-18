@@ -1,6 +1,7 @@
 use std::convert::From;
 use std::result::Result;
 use std::error::Error;
+use core::panicking::panic_fmt;
 
 /// The `Token` enum represents a single token.
 #[derive(Clone)]
@@ -95,15 +96,49 @@ pub fn tokenise_line(input: String) -> Vec<Token> {
     tokens
 }
 
-fn join(vec_a: &Vec<Token>, vec_b: &Vec<Token>) -> Vec<Token> {
-    let mut new_vec = vec_a.to_vec();
-    new_vec.push(Token::NewLine);
-    new_vec.extend(vec_b.iter().cloned());
-    new_vec
+struct TokenisedLine {
+    no: i32,
+    tokens: Vec<Token>,
 }
 
-pub fn tokenise(input: String) {
+fn join(vec_a: &mut Vec<Token>, vec_b: &Vec<Token>) {
+    vec_a.push(Token::NewLine);
+    vec_a.extend(vec_b.iter().cloned());
+}
+
+/// Turns code into tokens
+pub fn tokenise(input: String) -> Vec<Token> {
     use std::sync::mpsc::channel;
-    let (rx, tx) = channel::<String>();
-    let split_input: Vec<String> = input.lines().map(|x| String::from(x)).collect();
+    use std::thread;
+    let (tx, rx) = channel::<TokenisedLine>();
+    let mut split_input: Vec<String> = input.lines().map(|x| String::from(x)).collect();
+    let line_number = split_input.len();
+    let mut threads = Vec::new();
+    for n in 1..line_number {
+        let thread_tx = tx.clone();
+        let line = split_input.pop().unwrap();
+        let vector = thread::spawn(move || {
+            let tokenised_line = tokenise_line(line);
+            thread_tx.send(TokenisedLine {
+                no: n as i32,
+                tokens: tokenised_line,
+            })
+        });
+        threads.push(vector);
+    }
+    let mut tokenised_inputs: Vec<Token> = Vec::new();
+    for n in 1..line_number {
+        match rx.recv() {
+            Ok(result) => {
+                let tokenised_inputs = join(&mut tokenised_inputs, &result.tokens);
+            }
+            Err(error) => {
+                panic!(error.to_string())
+            }
+        }
+    }
+    for thrd in threads {
+        thrd.join().expect("The child thread panic-ed!");
+    }
+    tokenised_inputs
 }

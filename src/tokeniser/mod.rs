@@ -21,7 +21,6 @@ pub enum Token {
     NewLine,
     In,
     Space,
-    Tab,
     OpenRoundBracket,
     CloseRoundBracket,
     OpenSquareBracket,
@@ -32,6 +31,7 @@ pub enum Token {
     Return,
     Name(String),
     Number(f64),
+    Empty,
 }
 
 /// Converts a string into a token.
@@ -55,8 +55,6 @@ impl From<String> for Token {
             "for" => Token::For,
             "\n" => Token::NewLine,
             "in" => Token::In,
-            " " => Token::Space,
-            "\t" => Token::Tab,
             "(" => Token::OpenRoundBracket,
             "" => Token::CloseRoundBracket,
             "[" => Token::OpenSquareBracket,
@@ -77,4 +75,21 @@ impl From<String> for Token {
 
 
 /// The function `tokenize` takes a string and splits it up into tokens from the `Token` enum.
-pub fn tokenize(input: String) {}
+pub fn tokenize(input: String) -> Vec<Token> {
+    let mut tokens = Vec::new();
+    let mut current_sequence = Vec::new();
+    for chr in input.chars() {
+        if chr.to_string() == String::from(" ") {
+            if current_sequence.len() != 0 {
+                tokens.push(Token::from(current_sequence.join("")));
+                tokens.clear();
+                tokens.push(Token::Space);
+            } else {
+                tokens.push(Token::Space);
+            }
+        } else {
+            current_sequence.push(chr.to_string())
+        }
+    }
+    tokens
+}

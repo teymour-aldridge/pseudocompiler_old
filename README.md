@@ -7,8 +7,15 @@ A compiler for pseudocode, based on the [OCR specification](https://https://www.
 ## Language specification
 ### Variable assignment
 ```
-<identifier> = <expression>
+<identifier> = <expression> // a mutable variable
+global <identifier> = <expression> // a mutable global variable
 ```
+#### Variable types
+1. Numbers
+    1. Integers
+    2. Floating-point numbers
+2. Strings
+3. Arrays
 ### Loops
 #### While loop
 ```
@@ -40,6 +47,19 @@ endfunction
 <identifier>(<identifier>, <identifier>, ..., <identifier>)
 ```
 ### Arrays
+### Built-in functions
+#### Casting
+```
+str(<expression>) // Converts a value to a string
+int(<expression>) // Converts a value to an integer
+float(<expression>) // Converts a value to a floating-point integer
+```
+#### IO
+1. File handling – **not planned to be implemented in the short term**
+2. stdin/sdout
+    1. ```input(<expression>)``` – reads an input 
+    2. ```print(<expression>)``` – logs an output
+
 #### Initialisation
 ```
 <identifier> = [<expression>, <expression>, ..., <expression>]

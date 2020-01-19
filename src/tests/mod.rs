@@ -1,7 +1,9 @@
 #[cfg(test)]
 mod tests {
+    use crate::tokeniser::tokenise_line;
+
     #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
+    fn tokeniser() {
+        assert_eq!(tokenise_line(String::from("for i in range(12)")))
     }
 }

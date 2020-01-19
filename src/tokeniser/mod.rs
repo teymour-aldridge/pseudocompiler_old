@@ -2,6 +2,13 @@ use std::convert::From;
 use std::result::Result;
 use std::error::Error;
 use core::panicking::panic_fmt;
+use regex::Regex;
+use lazy_static;
+
+
+lazy_static! {
+    static ref FUNCTION_REGEX: Regex = Regex::new(r"[\w]+[(][\w ,]+[)]").unwrap();
+}
 
 /// The `Token` enum represents a single token.
 #[derive(Clone)]
@@ -17,7 +24,7 @@ pub enum Token {
     ElseIf,
     Else,
     EndIf,
-    Function,
+    Function(Token::Identifier, Vec<Token::Identifier>),
     EndFunction,
     For,
     NewLine,
@@ -31,7 +38,7 @@ pub enum Token {
     Equals,
     Global,
     Return,
-    Name(String),
+    Identifier(String),
     Number(f64),
     Empty,
 }
@@ -67,8 +74,11 @@ impl From<String> for Token {
             _ => {
                 if sequence.parse::<f64>().is_ok() {
                     Token::Number(sequence.parse::<f64>().unwrap())
+                } else if FUNCTION_REGEX.is_match(&sequence) {
+                    let name: Vec<&str> = sequence.split("(")[0];
+
                 } else {
-                    Token::Name(sequence)
+                    Token::Identifier(sequence)
                 }
             }
         }

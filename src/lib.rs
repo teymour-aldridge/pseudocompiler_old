@@ -1,6 +1,7 @@
 #![feature(core_panic)]
 #![feature(box_syntax, box_patterns)]
-
+#[macro_use]
+extern crate lazy_static;
 
 mod tests;
 mod tokeniser;

@@ -4,7 +4,7 @@
 extern crate lazy_static;
 
 mod tests;
-mod tokeniser;
+mod parser;
 mod tree;
 
 use lazy_static::lazy_static;

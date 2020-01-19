@@ -5,12 +5,12 @@ A compiler for pseudocode, based on the [OCR specification](https://https://www.
 1. Web interface
     1. > Turn pseudocode into Javascript code.
     2. > Build a web interface (using the Javascript `eval` statement and wasm to execute code on the fly).
-        1. Allow users to compile code
-        2. Allow users to set up test cases
-        3. Allow users to share code
-            1. Dynamic URLs generated using compression
-            2. Allow users to share test cases
-            3. Allow users to share finished code
+        1. > Allow users to compile code
+        2. > Allow users to set up test cases
+        3. > Allow users to share code
+            1. > Dynamic URLs generated using compression
+            2. > Allow users to share test cases
+            3. > Allow users to share finished code
 2. > Turn pseudocode into LLVM IR.
 
 Please note that this compiler comes with **no warranty**.

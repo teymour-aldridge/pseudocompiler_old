@@ -1,6 +1,8 @@
 #![feature(core_panic)]
+
 mod tests;
 mod tokeniser;
+mod tree;
 
 use lazy_static::lazy_static;
 use regex::Regex;

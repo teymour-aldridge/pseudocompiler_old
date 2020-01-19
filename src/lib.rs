@@ -1,4 +1,6 @@
 #![feature(core_panic)]
+#![feature(box_syntax, box_patterns)]
+
 
 mod tests;
 mod tokeniser;

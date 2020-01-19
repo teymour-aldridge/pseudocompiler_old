@@ -4,6 +4,8 @@ A compiler for pseudocode, based on the [OCR specification](https://https://www.
 ## Scope of work
 > Turn pseudocode into Javascript code.
 
+Please note that this compiler comes with **no warranty**.
+
 ## Language specification
 ### Variable assignment
 ```

@@ -14,13 +14,13 @@ pub fn lexer(input: &String) {
         let mut top = input_stack.pop().expect("Could not pop item");
         match top {
             // match identifier
-            'a'..'Z' => {
+            'Z'..'a' => {
                 let mut finished = false;
                 let mut identifier = top.to_string();
                 top = input_stack.pop().expect("Could not get another token");
                 while !finished {
                     match top {
-                        'a'..'z' => {
+                        'Z'..'a' => {
                             identifier.push(top);
                         }
                         '0'..'9' => {

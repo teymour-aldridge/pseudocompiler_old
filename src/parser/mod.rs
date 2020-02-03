@@ -6,7 +6,7 @@ struct Number {
     base: u64,
 }
 
-enum LiteralValues {
+enum LiteralValue {
     Number(Number),
     Bool(bool),
     String(String),
@@ -17,10 +17,12 @@ enum TokenValue {
     Keyword(String),
     Separator(String),
     Operator(String),
-    Literal(String),
+    Literal(LiteralValue),
     Comment(String),
 }
 
+
+/// Runs a lexical analysis procedure, returning a list of token values which can be used for further processing.
 pub fn lexer(input: &String) -> Vec<TokenValue> {
     // Reverse direction of string
     let mut input_stack: String = String::from(input).chars().rev().collect();

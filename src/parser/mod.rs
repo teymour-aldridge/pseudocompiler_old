@@ -1,10 +1,10 @@
 enum TokenValue {
-    Identifier,
-    Keyword,
-    Separator,
-    Operator,
-    Literal,
-    Comment,
+    Identifier(String),
+    Keyword(String),
+    Separator(String),
+    Operator(String),
+    Literal(String),
+    Comment(String),
 }
 
 pub fn lexer(input: &String) {

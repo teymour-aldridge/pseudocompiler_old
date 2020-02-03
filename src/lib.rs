@@ -1,11 +1,10 @@
 #![feature(core_panic)]
-#![feature(box_syntax, box_patterns)]
+#![feature(exclusive_range_pattern)]
 #[macro_use]
 extern crate lazy_static;
 
 mod tests;
 mod parser;
-mod tree;
 
 use lazy_static::lazy_static;
 use regex::Regex;

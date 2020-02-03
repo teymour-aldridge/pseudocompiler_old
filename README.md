@@ -1,7 +1,7 @@
 # Pseudocompiler
 A compiler for pseudocode, inspired by the [OCR specification](https://https://www.ocr.org.uk/Images/202654-pseudocode-guide.pdf) [[backup link](https://web.archive.org/web/20200118155656/https://www.ocr.org.uk/Images/202654-pseudocode-guide.pdf)].
 
-## Scope of work
+# Scope of work
 1. Web interface
     1. > Turn pseudocode into Javascript code.
     2. > Build a web interface (using the Javascript `eval` statement and wasm to execute code on the fly).
@@ -79,3 +79,5 @@ float(<expression>) // Converts a value to a floating-point integer
 ```
 <identifier>[<expression>] = <expression>
 ```
+# Acknowledgments
+* 

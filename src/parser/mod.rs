@@ -9,7 +9,7 @@ enum TokenValue {
     Comment(String),
 }
 
-pub fn lexer(input: &String) {
+pub fn lexer(input: &String) -> Vec<TokenValue> {
     // Reverse direction of string
     let mut input_stack: String = String::from(input).chars().rev().collect();
     let mut output_stack: Vec<TokenValue> = Vec::new();
@@ -71,6 +71,7 @@ pub fn lexer(input: &String) {
             }
         };
     };
+    output_stack
 }
 
 pub fn parser() {}

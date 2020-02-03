@@ -1,9 +1,19 @@
 use std::intrinsics::panic_if_uninhabited;
 
 struct Number {
-    exponent: Option<u64>,
-    decimal: Option<u64>,
-    base: u64,
+    exponent: Option<String>,
+    decimal: Option<String>,
+    base: String,
+}
+
+impl Number {
+    pub fn new() -> Self {
+        Self {
+            exponent: None,
+            decimal: None,
+            base: String::from(""),
+        }
+    }
 }
 
 enum LiteralValue {
@@ -29,8 +39,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
     let mut output_stack: Vec<TokenValue> = Vec::new();
     let mut pos_number = 0;
     while input_stack.len() == 0 {
-        let mut top = input_stack.pop().expect("Could not pop item");
-        pos_number += 1;
+        let mut top = input_stack[-1];
         match top {
             // match identifier
             'Z'..'a' => {
@@ -69,8 +78,21 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                     if input_stack.len() > 0 {
                         top = input_stack.pop().expect("Could not get another token.");
                         pos_number += 1;
+                        let mut number = Number::new();
+                        let mut exponent = false;
+                        let mut decimal = false;
                         match top {
-                            '0'..'9' => {}
+                            '0'..'9' => {
+                                if exponent {
+                                    number.exponent = Some(String::from(number.exponent) + &String::from(top))
+                                } else if decimal {
+                                    number.decimal = Some(String::from(number.decimal) + &String::from(top))
+                                } else {
+                                    number.base = String::from(number.base) + &String::from(top)
+                                }
+                            }
+                            '.' => {}
+                            'e' => {}
                             ' ' => {
                                 finished = true;
                             }
@@ -83,6 +105,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                     }
                 }
             }
+            '"' => {}
             _ => {
                 panic!("Found an invalid token {}!", top)
             }

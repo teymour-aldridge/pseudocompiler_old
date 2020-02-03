@@ -1,5 +1,17 @@
 use std::intrinsics::panic_if_uninhabited;
 
+struct Number {
+    exponent: Option<u64>,
+    decimal: Option<u64>,
+    base: u64,
+}
+
+enum LiteralValues {
+    Number(Number),
+    Bool(bool),
+    String(String),
+}
+
 enum TokenValue {
     Identifier(String),
     Keyword(String),
@@ -56,7 +68,10 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                         top = input_stack.pop().expect("Could not get another token.");
                         pos_number += 1;
                         match top {
-                            '0' => {}
+                            '0'..'9' => {}
+                            ' ' => {
+                                finished = true;
+                            }
                             _ => {
                                 panic!("Unexpected token.")
                             }

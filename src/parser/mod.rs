@@ -1,10 +1,9 @@
-use std::intrinsics::panic_if_uninhabited;
-
 struct Number {
     exponent: Option<String>,
     decimal: Option<String>,
     base: String,
 }
+
 
 impl Number {
     pub fn new() -> Self {
@@ -12,6 +11,19 @@ impl Number {
             exponent: None,
             decimal: None,
             base: String::from(""),
+        }
+    }
+    pub fn from_values(exponent: &Option<String>, decimal: &Option<String>, base: &String) -> Self {
+        Self {
+            exponent: match exponent {
+                Some(t) => Some(String::from(t)),
+                None => None
+            },
+            decimal: match decimal {
+                Some(t) => Some(String::from(t)),
+                None => None
+            },
+            base: String::from(base),
         }
     }
 }
@@ -22,7 +34,7 @@ enum LiteralValue {
     String(String),
 }
 
-enum Keyword {
+pub enum Keyword {
     If,
     ElseIf,
     EndIf,
@@ -35,33 +47,46 @@ enum Keyword {
     Return,
 }
 
-enum TokenValue {
+pub struct Loc {
+    line_num: i32,
+    column_num: i32,
+}
+
+impl Loc {
+    pub fn new(line: i32, column: i32) -> Self {
+        Self {
+            line_num: line,
+            column_num: column,
+        }
+    }
+}
+
+pub enum TokenValue {
     Identifier(String),
-    Keyword(String),
+    Keyword(Keyword),
     Separator(String),
     Operator(String),
     Literal(LiteralValue),
     Comment(String),
 }
 
-
 /// Runs a lexical analysis procedure, returning a list of token values which can be used for further processing.
 pub fn lexer(input: &String) -> Vec<TokenValue> {
-    // Reverse direction of string
+// Reverse direction of string
     let mut input_stack: String = String::from(input).chars().rev().collect();
     let mut output_stack: Vec<TokenValue> = Vec::new();
     let mut pos_number = 0;
+    let mut loc = Loc::new(0, 0);
     while input_stack.len() == 0 {
-        let mut top = input_stack[-1];
+        let mut top = input_stack.chars().next().unwrap();
         match top {
             // match identifier
             'Z'..'a' => {
                 let mut finished = false;
-                let mut identifier = top.to_string();
+                let mut identifier = String::from("");
                 while !finished {
                     if input_stack.len() > 0 {
-                        top = input_stack.pop().expect("Could not get another token");
-                        pos_number += 1;
+                        top = input_stack.pop().expect("Could not get another token.");
                         match top {
                             'Z'..'a' => {
                                 identifier.push(top);
@@ -70,7 +95,11 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                                 identifier.push(top)
                             }
                             ' ' => {
-                                finished = true
+                                finished = true;
+                            }
+                            '\n' => {
+                                loc.line_num += 1;
+                                finished = true;
                             }
                             _ => {
                                 panic!("Invalid token {}", top)
@@ -84,24 +113,37 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                     }
                 };
             }
-            // match number
+// match number
             '0'..'9' => {
                 let mut finished = false;
+                let mut number = Number::new();
                 while !finished {
                     if input_stack.len() > 0 {
                         top = input_stack.pop().expect("Could not get another token.");
-                        pos_number += 1;
-                        let mut number = Number::new();
                         let mut exponent = false;
                         let mut decimal = false;
                         match top {
                             '0'..'9' => {
                                 if exponent {
-                                    number.exponent = Some(String::from(number.exponent) + &String::from(top))
+                                    number.exponent = match number.exponent {
+                                        Some(exp) => {
+                                            Some(String::from(exp + &top.to_string()))
+                                        }
+                                        None => {
+                                            Some(String::from(&top.to_string()))
+                                        }
+                                    }
                                 } else if decimal {
-                                    number.decimal = Some(String::from(number.decimal) + &String::from(top))
+                                    number.decimal = match number.decimal {
+                                        Some(dec) => {
+                                            Some(String::from(dec + &top.to_string()))
+                                        }
+                                        None => {
+                                            Some(String::from(&top.to_string()))
+                                        }
+                                    }
                                 } else {
-                                    number.base = String::from(number.base) + &String::from(top)
+                                    number.base = String::from(number.base) + &top.to_string()
                                 }
                             }
                             '.' => {
@@ -113,6 +155,10 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                             ' ' => {
                                 finished = true;
                             }
+                            '\n' => {
+                                loc.line_num += 1;
+                                finished = true;
+                            }
                             _ => {
                                 panic!("Unexpected token.")
                             }
@@ -120,9 +166,17 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                     } else {
                         finished = true;
                     }
+                    if finished {
+                        output_stack.push(TokenValue::Literal(LiteralValue::Number(Number::from_values(&number.decimal, &number.exponent, &number.base))))
+                    }
                 }
             }
+            // match a string
             '"' => {}
+            '\n' => {
+                loc.line_num += 1;
+                input_stack.pop().expect("");
+            }
             _ => {
                 panic!("Found an invalid token {}!", top)
             }

@@ -87,6 +87,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                 while !finished {
                     if input_stack.len() > 0 {
                         top = input_stack.pop().expect("Could not get another token.");
+                        loc.column_num += 1;
                         match top {
                             'Z'..'a' => {
                                 identifier.push(top);
@@ -120,6 +121,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                 while !finished {
                     if input_stack.len() > 0 {
                         top = input_stack.pop().expect("Could not get another token.");
+                        loc.column_num += 1;
                         let mut exponent = false;
                         let mut decimal = false;
                         match top {

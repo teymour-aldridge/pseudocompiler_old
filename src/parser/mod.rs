@@ -260,6 +260,10 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                 input_stack.pop().unwrap();
                 output_stack.push(TokenValue::Operator(Operator::Plus))
             }
+            '-' => {
+                input_stack.pop().unwrap();
+                output_stack.push(TokenValue::Operator(Operator::Minus))
+            }
             _ => {
                 panic!("Found an invalid token {}!", top)
             }

@@ -1,5 +1,5 @@
 # Pseudocompiler
-A compiler for pseudocode, inspired by the [OCR specification](https://https://www.ocr.org.uk/Images/202654-pseudocode-guide.pdf) [[backup link](https://web.archive.org/web/20200118155656/https://www.ocr.org.uk/Images/202654-pseudocode-guide.pdf)].
+A compiler for pseudocode, inspired by the [OCR specification](https://www.ocr.org.uk/Images/202654-pseudocode-guide.pdf) [[backup link](https://web.archive.org/web/20200118155656/https://www.ocr.org.uk/Images/202654-pseudocode-guide.pdf)].
 
 # Scope of work
 1. Web interface

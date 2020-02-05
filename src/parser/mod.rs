@@ -22,6 +22,19 @@ enum LiteralValue {
     String(String),
 }
 
+enum Keyword {
+    If,
+    ElseIf,
+    EndIf,
+    For,
+    EndFor,
+    While,
+    EndWhile,
+    Function,
+    EndFunction,
+    Return,
+}
+
 enum TokenValue {
     Identifier(String),
     Keyword(String),
@@ -91,8 +104,12 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                                     number.base = String::from(number.base) + &String::from(top)
                                 }
                             }
-                            '.' => {}
-                            'e' => {}
+                            '.' => {
+                                decimal = true;
+                            }
+                            'e' => {
+                                exponent = true;
+                            }
                             ' ' => {
                                 finished = true;
                             }

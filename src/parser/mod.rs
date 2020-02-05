@@ -61,6 +61,18 @@ impl Loc {
     }
 }
 
+pub enum Operator {
+    Plus,
+    Minus,
+    Times,
+    Divide,
+    IntegerDivide,
+    Modulo,
+    And,
+    Or,
+    Not
+}
+
 pub enum TokenValue {
     Identifier(String),
     Keyword(Keyword),

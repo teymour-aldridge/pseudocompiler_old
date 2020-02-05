@@ -70,14 +70,14 @@ pub enum Operator {
     Modulo,
     And,
     Or,
-    Not
+    Not,
 }
 
 pub enum TokenValue {
     Identifier(String),
     Keyword(Keyword),
     Separator(String),
-    Operator(String),
+    Operator(Operator),
     Literal(LiteralValue),
     Comment(String),
 }
@@ -115,7 +115,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                                 finished = true;
                             }
                             _ => {
-                                panic!("Invalid token {}", top)
+                                panic!("Invalid token on line {}, column {}", loc.column_num, loc.line_num)
                             }
                         }
                     } else {
@@ -128,6 +128,15 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                             }
                             "false" => {
                                 output_stack.push(TokenValue::Literal(LiteralValue::Bool(false)))
+                            }
+                            "and" => {
+                                output_stack.push(TokenValue::Operator(Operator::And))
+                            }
+                            "or" => {
+                                output_stack.push(TokenValue::Operator(Operator::Or))
+                            }
+                            "not" => {
+                                output_stack.push(TokenValue::Operator(Operator::Not))
                             }
                             "if" => {
                                 output_stack.push(TokenValue::Keyword(Keyword::If))
@@ -149,6 +158,9 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                             }
                             "endwhile" => {
                                 output_stack.push(TokenValue::Keyword(Keyword::EndWhile))
+                            }
+                            "return" => {
+                                output_stack.push(TokenValue::Keyword(Keyword::Return))
                             }
                             _ => {
                                 output_stack.push(TokenValue::Identifier(String::from(&identifier)))

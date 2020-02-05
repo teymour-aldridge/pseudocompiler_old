@@ -110,7 +110,38 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                         finished = true;
                     }
                     if finished {
-                        output_stack.push(TokenValue::Identifier(String::from(&identifier)))
+                        match identifier.as_str() {
+                            "true" => {
+                                output_stack.push(TokenValue::Literal(LiteralValue::Bool(true)))
+                            }
+                            "false" => {
+                                output_stack.push(TokenValue::Literal(LiteralValue::Bool(false)))
+                            }
+                            "if" => {
+                                output_stack.push(TokenValue::Keyword(Keyword::If))
+                            }
+                            "endif" => {
+                                output_stack.push(TokenValue::Keyword(Keyword::EndIf))
+                            }
+                            "elseif" => {
+                                output_stack.push(TokenValue::Keyword(Keyword::ElseIf))
+                            }
+                            "function" => {
+                                output_stack.push(TokenValue::Keyword(Keyword::Function))
+                            }
+                            "endfunction" => {
+                                output_stack.push(TokenValue::Keyword(Keyword::EndFunction))
+                            }
+                            "while" => {
+                                output_stack.push(TokenValue::Keyword(Keyword::While))
+                            }
+                            "endwhile" => {
+                                output_stack.push(TokenValue::Keyword(Keyword::EndWhile))
+                            }
+                            _ => {
+                                output_stack.push(TokenValue::Identifier(String::from(&identifier)))
+                            }
+                        }
                     }
                 };
             }

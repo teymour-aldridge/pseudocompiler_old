@@ -234,6 +234,28 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                 loc.line_num += 1;
                 input_stack.pop().expect("");
             }
+            '/' => {
+                let mut stream = input_stack.chars();
+                let mut next = stream.next().unwrap();
+                match next {
+                    '/' => {
+                        input_stack.pop().unwrap();
+                        input_stack.pop().unwrap();
+                        output_stack.push(TokenValue::Operator(Operator::IntegerDivide))
+                    }
+                    ' ' => {
+                        input_stack.pop().unwrap();
+                        output_stack.push(TokenValue::Operator(Operator::Divide))
+                    }
+                    '0'..'9' => {
+                        input_stack.pop().unwrap();
+                        output_stack.push(TokenValue::Operator(Operator::Divide))
+                    }
+                    _ => {
+                        panic!("Invalid token following a '/' at line {}, column {}", loc.line_num, loc.column_num)
+                    }
+                }
+            }
             _ => {
                 panic!("Found an invalid token {}!", top)
             }

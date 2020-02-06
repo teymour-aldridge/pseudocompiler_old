@@ -80,9 +80,9 @@ pub enum TokenValue {
     Separator(String),
     Operator(Operator, Loc),
     Literal(LiteralValue, Loc),
-    Comment(String),
-    OpenBracket,
-    CloseBracket,
+    Comment(String, Loc),
+    OpenBracket(Loc),
+    CloseBracket(Loc),
 }
 
 /// Runs a lexical analysis procedure, returning a list of token values which can be used for further processing.
@@ -261,19 +261,23 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
             }
             '+' => {
                 input_stack.pop().unwrap();
+                loc.column_num+=1;
                 output_stack.push(TokenValue::Operator(Operator::Plus, loc))
             }
             '-' => {
                 input_stack.pop().unwrap();
+                loc.column_num+=1;
                 output_stack.push(TokenValue::Operator(Operator::Minus, loc))
             }
             '*' => {
                 input_stack.pop().unwrap();
+                loc.column_num+=1;
                 output_stack.push(TokenValue::Operator(Operator::Times, loc))
             }
             '(' => {
                 input_stack.pop().unwrap();
-                output_stack.push(TokenValue::OpenBracket)
+                loc.column_num+=1;
+                output_stack.push(TokenValue::OpenBracket(loc))
             }
             _ => {
                 panic!("Found an invalid token {}!", top)

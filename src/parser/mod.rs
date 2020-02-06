@@ -97,7 +97,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
     let mut output_stack: Vec<TokenValue> = Vec::new();
     let mut pos_number = 0;
     let mut loc = Loc::new(0, 0);
-    while input_stack.len() == 0 {
+    while input_stack.len() > 0 {
         let mut top = input_stack.chars().next().unwrap();
         match top {
             // match identifier
@@ -293,7 +293,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                 output_stack.push(TokenValue::CloseBracket(loc))
             }
             _ => {
-                panic!("Found an invalid token {}!", top)
+                panic!("Found an invalid token {} at line {}, column {}.", top, loc.line_num, loc.column_num)
             }
         };
     };

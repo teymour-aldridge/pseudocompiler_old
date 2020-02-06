@@ -96,7 +96,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
     let mut input_stack: String = String::from(input).chars().rev().collect();
     let mut output_stack: Vec<TokenValue> = Vec::new();
     let mut pos_number = 0;
-    let mut loc = Loc::new(0, 0);
+    let mut loc = Loc::new(1, 1);
     while input_stack.len() > 0 {
         let mut top = input_stack.chars().next().unwrap();
         match top {

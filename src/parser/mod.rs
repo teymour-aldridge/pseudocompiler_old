@@ -1,3 +1,4 @@
+#[derive(Debug)]
 struct Number {
     exponent: Option<String>,
     decimal: Option<String>,
@@ -28,12 +29,14 @@ impl Number {
     }
 }
 
+#[derive(Debug)]
 enum LiteralValue {
     Number(Number),
     Bool(bool),
     String(String),
 }
 
+#[derive(Debug)]
 pub enum Keyword {
     If,
     ElseIf,
@@ -47,7 +50,7 @@ pub enum Keyword {
     Return,
 }
 
-#[derive(Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct Loc {
     line_num: i32,
     column_num: i32,
@@ -62,6 +65,7 @@ impl Loc {
     }
 }
 
+#[derive(Debug)]
 pub enum Operator {
     Plus,
     Minus,
@@ -74,6 +78,7 @@ pub enum Operator {
     Not,
 }
 
+#[derive(Debug)]
 pub enum TokenValue {
     Identifier(String, Loc),
     Keyword(Keyword, Loc),

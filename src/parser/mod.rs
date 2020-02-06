@@ -1,3 +1,5 @@
+mod helpers;
+
 #[derive(Debug)]
 struct Number {
     exponent: Option<String>,

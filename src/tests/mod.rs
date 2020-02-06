@@ -3,6 +3,6 @@ mod tests {
     #[test]
     fn assignment() {
         use crate::parser::*;
-        println!("{:?}", lexer(&String::from("hello =")))
+        println!("{:?}", lexer(&String::from("1.6e8")))
     }
 }

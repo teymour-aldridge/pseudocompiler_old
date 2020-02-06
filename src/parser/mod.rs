@@ -76,6 +76,7 @@ pub enum Operator {
     And,
     Or,
     Not,
+    Equals,
 }
 
 #[derive(Debug)]
@@ -90,10 +91,16 @@ pub enum TokenValue {
     CloseBracket(Loc),
 }
 
+pub fn get_first(input: &mut String) -> char {
+    let first = input.chars().next().unwrap();
+    input.remove(0);
+    first
+}
+
 /// Runs a lexical analysis procedure, returning a list of token values which can be used for further processing.
 pub fn lexer(input: &String) -> Vec<TokenValue> {
 // Reverse direction of string
-    let mut input_stack: String = String::from(input).chars().rev().collect();
+    let mut input_stack: String = String::from(input);
     let mut output_stack: Vec<TokenValue> = Vec::new();
     let mut pos_number = 0;
     let mut loc = Loc::new(1, 0);
@@ -106,7 +113,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                 let mut identifier = String::from("");
                 while !finished {
                     if input_stack.len() > 0 {
-                        top = input_stack.pop().expect("Could not get another token.");
+                        top = get_first(&mut input_stack);
                         loc.column_num += 1;
                         match top {
                             'a'..='z' | 'A'..='Z' => {
@@ -123,7 +130,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                                 finished = true;
                             }
                             _ => {
-                                panic!("Invalid token {} on line {}, column {}", top, loc.column_num, loc.line_num)
+                                panic!("Unexpected token {} on line {}, column {}.", top, loc.column_num, loc.line_num)
                             }
                         }
                     } else {
@@ -183,7 +190,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                 let mut number = Number::new();
                 while !finished {
                     if input_stack.len() > 0 {
-                        top = input_stack.pop().expect("Could not get another token.");
+                        top = get_first(&mut input_stack);
                         loc.column_num += 1;
                         let mut exponent = false;
                         let mut decimal = false;
@@ -218,14 +225,14 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                                 exponent = true;
                             }
                             ' ' => {
-                                finished = true;
+                                break;
                             }
                             '\n' => {
                                 loc.line_num += 1;
                                 finished = true;
                             }
                             _ => {
-                                panic!("Unexpected token.")
+                                panic!("Unexpected token {} on line {}, column {}.", top, loc.column_num, loc.line_num)
                             }
                         }
                     } else {
@@ -240,57 +247,66 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
             '"' => {}
             '\n' => {
                 loc.line_num += 1;
-                input_stack.pop().expect("");
+                get_first(&mut input_stack);
             }
             '/' => {
                 let mut stream = input_stack.chars();
                 let mut next = stream.next().unwrap();
                 match next {
                     '/' => {
-                        input_stack.pop().unwrap();
-                        input_stack.pop().unwrap();
+                        get_first(&mut input_stack);
+                        get_first(&mut input_stack);
                         loc.column_num += 2;
                         output_stack.push(TokenValue::Operator(Operator::IntegerDivide, loc))
                     }
                     ' ' => {
-                        input_stack.pop().unwrap();
+                        get_first(&mut input_stack);
                         loc.column_num += 1;
                         output_stack.push(TokenValue::Operator(Operator::Divide, loc))
                     }
                     '0'..'9' => {
-                        input_stack.pop().unwrap();
+                        get_first(&mut input_stack);
                         loc.column_num += 1;
                         output_stack.push(TokenValue::Operator(Operator::Divide, loc))
                     }
                     _ => {
-                        panic!("Invalid token following a '/' at line {}, column {}", loc.line_num, loc.column_num)
+                        panic!("Unexpected token {} on line {}, column {}.", top, loc.column_num, loc.line_num)
                     }
                 }
             }
             '+' => {
-                input_stack.pop().unwrap();
+                get_first(&mut input_stack);
                 loc.column_num += 1;
                 output_stack.push(TokenValue::Operator(Operator::Plus, loc))
             }
             '-' => {
-                input_stack.pop().unwrap();
+                get_first(&mut input_stack);
                 loc.column_num += 1;
                 output_stack.push(TokenValue::Operator(Operator::Minus, loc))
             }
             '*' => {
-                input_stack.pop().unwrap();
+                get_first(&mut input_stack);
                 loc.column_num += 1;
                 output_stack.push(TokenValue::Operator(Operator::Times, loc))
             }
             '(' => {
-                input_stack.pop().unwrap();
+                get_first(&mut input_stack);
                 loc.column_num += 1;
                 output_stack.push(TokenValue::OpenBracket(loc))
             }
             ')' => {
-                input_stack.pop().unwrap();
+                get_first(&mut input_stack);
                 loc.column_num += 1;
                 output_stack.push(TokenValue::CloseBracket(loc))
+            }
+            ' ' => {
+                get_first(&mut input_stack);
+            }
+            '=' => {
+                get_first(&mut input_stack);
+                println!("{:?}", input_stack);
+                loc.column_num += 1;
+                output_stack.push(TokenValue::Operator(Operator::Equals, loc))
             }
             _ => {
                 panic!("Found an invalid token {} at line {}, column {}.", top, loc.line_num, loc.column_num)

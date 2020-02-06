@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod tests {
     #[test]
-    fn it_works() {
+    fn assignment() {
         use crate::parser::*;
-        println!("{:?}", lexer(&String::from("hello")))
+        println!("{:?}", lexer(&String::from("hello =")))
     }
 }

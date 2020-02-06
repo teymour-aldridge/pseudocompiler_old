@@ -244,14 +244,17 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                     '/' => {
                         input_stack.pop().unwrap();
                         input_stack.pop().unwrap();
+                        loc.column_num += 2;
                         output_stack.push(TokenValue::Operator(Operator::IntegerDivide, loc))
                     }
                     ' ' => {
                         input_stack.pop().unwrap();
+                        loc.column_num += 1;
                         output_stack.push(TokenValue::Operator(Operator::Divide, loc))
                     }
                     '0'..'9' => {
                         input_stack.pop().unwrap();
+                        loc.column_num += 1;
                         output_stack.push(TokenValue::Operator(Operator::Divide, loc))
                     }
                     _ => {
@@ -261,23 +264,28 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
             }
             '+' => {
                 input_stack.pop().unwrap();
-                loc.column_num+=1;
+                loc.column_num += 1;
                 output_stack.push(TokenValue::Operator(Operator::Plus, loc))
             }
             '-' => {
                 input_stack.pop().unwrap();
-                loc.column_num+=1;
+                loc.column_num += 1;
                 output_stack.push(TokenValue::Operator(Operator::Minus, loc))
             }
             '*' => {
                 input_stack.pop().unwrap();
-                loc.column_num+=1;
+                loc.column_num += 1;
                 output_stack.push(TokenValue::Operator(Operator::Times, loc))
             }
             '(' => {
                 input_stack.pop().unwrap();
-                loc.column_num+=1;
+                loc.column_num += 1;
                 output_stack.push(TokenValue::OpenBracket(loc))
+            }
+            ')' => {
+                input_stack.pop().unwrap();
+                loc.column_num += 1;
+                output_stack.push(TokenValue::CloseBracket(loc))
             }
             _ => {
                 panic!("Found an invalid token {}!", top)

@@ -1,6 +1,7 @@
+#[derive(Debug)]
 pub struct NumberState {
-    exponent: bool,
-    decimal: bool,
+    pub exponent: bool,
+    pub decimal: bool,
 }
 
 impl NumberState {

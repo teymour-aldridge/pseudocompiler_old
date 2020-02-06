@@ -1,3 +1,5 @@
+use crate::parser::helpers::NumberState;
+
 mod helpers;
 
 #[derive(Debug)]
@@ -190,15 +192,14 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
             '0'..'9' => {
                 let mut finished = false;
                 let mut number = Number::new();
+                let mut state = NumberState::new();
                 while !finished {
                     if input_stack.len() > 0 {
                         top = get_first(&mut input_stack);
                         loc.column_num += 1;
-                        let mut exponent = false;
-                        let mut decimal = false;
                         match top {
                             '0'..'9' => {
-                                if exponent {
+                                if state.exponent {
                                     number.exponent = match number.exponent {
                                         Some(exp) => {
                                             Some(String::from(exp + &top.to_string()))
@@ -207,7 +208,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                                             Some(String::from(&top.to_string()))
                                         }
                                     }
-                                } else if decimal {
+                                } else if state.decimal {
                                     number.decimal = match number.decimal {
                                         Some(dec) => {
                                             Some(String::from(dec + &top.to_string()))
@@ -221,10 +222,10 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                                 }
                             }
                             '.' => {
-                                decimal = true;
+                                state.set_dec(true);
                             }
                             'e' => {
-                                exponent = true;
+                                state.set_exp(true);
                             }
                             ' ' => {
                                 break;

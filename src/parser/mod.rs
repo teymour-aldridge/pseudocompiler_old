@@ -101,7 +101,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
         let mut top = input_stack.chars().next().unwrap();
         match top {
             // match identifier
-            'a'..='z' => {
+            'a'..='z' | 'A'..='Z' => {
                 let mut finished = false;
                 let mut identifier = String::from("");
                 while !finished {
@@ -109,7 +109,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                         top = input_stack.pop().expect("Could not get another token.");
                         loc.column_num += 1;
                         match top {
-                            'a'..='z' => {
+                            'a'..='z' | 'A'..='Z' => {
                                 identifier.push(top);
                             }
                             '0'..'9' => {

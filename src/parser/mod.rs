@@ -2,8 +2,8 @@ use crate::parser::helpers::NumberState;
 
 mod helpers;
 
-#[derive(Debug)]
-struct Number {
+#[derive(Debug, PartialEq)]
+pub struct Number {
     exponent: Option<String>,
     decimal: Option<String>,
     base: String,
@@ -33,14 +33,14 @@ impl Number {
     }
 }
 
-#[derive(Debug)]
-enum LiteralValue {
+#[derive(Debug, PartialEq)]
+pub enum LiteralValue {
     Number(Number),
     Bool(bool),
     String(String),
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Keyword {
     If,
     ElseIf,
@@ -54,7 +54,7 @@ pub enum Keyword {
     Return,
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Loc {
     line_num: i32,
     column_num: i32,
@@ -69,7 +69,7 @@ impl Loc {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Operator {
     Plus,
     Minus,
@@ -83,7 +83,7 @@ pub enum Operator {
     Equals,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum TokenValue {
     Identifier(String, Loc),
     Keyword(Keyword, Loc),

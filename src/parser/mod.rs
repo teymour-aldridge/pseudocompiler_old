@@ -129,6 +129,10 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                             ' ' => {
                                 finished = true;
                             }
+                            '=' => {
+                                output_stack.push(TokenValue::Operator(Operator::Equals, loc));
+                                finished = true;
+                            }
                             '\n' => {
                                 loc.line_num += 1;
                                 finished = true;

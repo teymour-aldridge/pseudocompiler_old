@@ -4,9 +4,9 @@ mod helpers;
 
 #[derive(Debug, PartialEq)]
 pub struct Number {
-    exponent: Option<String>,
-    decimal: Option<String>,
-    base: String,
+    pub exponent: Option<String>,
+    pub decimal: Option<String>,
+    pub base: String,
 }
 
 
@@ -56,8 +56,8 @@ pub enum Keyword {
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Loc {
-    line_num: i32,
-    column_num: i32,
+    pub line_num: i32,
+    pub column_num: i32,
 }
 
 impl Loc {
@@ -129,8 +129,8 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                             ' ' => {
                                 finished = true;
                             }
-                            '/' | '+' | '-' | '*' | '.' => {
-                                input_stack = top + input_stack;
+                            '/' | '+' | '-' | '*' | '.' | '=' => {
+                                input_stack = top.to_string() + &input_stack;
                                 finished = true;
                             }
                             '\n' => {

@@ -199,19 +199,19 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                         loc.column_num += 1;
                         match top {
                             '0'..'9' => {
-                                if state.exponent {
-                                    number.exponent = match number.exponent {
-                                        Some(exp) => {
-                                            Some(String::from(exp + &top.to_string()))
+                                if state.decimal {
+                                    number.decimal = match number.decimal {
+                                        Some(dec) => {
+                                            Some(String::from(dec + &top.to_string()))
                                         }
                                         None => {
                                             Some(String::from(&top.to_string()))
                                         }
-                                    }
-                                } else if state.decimal {
-                                    number.decimal = match number.decimal {
-                                        Some(dec) => {
-                                            Some(String::from(dec + &top.to_string()))
+                                    };
+                                } else if state.exponent {
+                                    number.exponent = match number.exponent {
+                                        Some(exp) => {
+                                            Some(String::from(exp + &top.to_string()))
                                         }
                                         None => {
                                             Some(String::from(&top.to_string()))
@@ -242,7 +242,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                         finished = true;
                     }
                     if finished {
-                        output_stack.push(TokenValue::Literal(LiteralValue::Number(Number::from_values(&number.decimal, &number.exponent, &number.base)), loc))
+                        output_stack.push(TokenValue::Literal(LiteralValue::Number(Number::from_values(&number.exponent, &number.decimal, &number.base)), loc));
                     }
                 }
             }
@@ -307,7 +307,6 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
             }
             '=' => {
                 get_first(&mut input_stack);
-                println!("{:?}", input_stack);
                 loc.column_num += 1;
                 output_stack.push(TokenValue::Operator(Operator::Equals, loc))
             }

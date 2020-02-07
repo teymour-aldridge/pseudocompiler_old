@@ -13,6 +13,9 @@ impl NumberState {
     }
     pub fn set_exp(&mut self, val: bool) {
         self.exponent = val;
+        if val {
+            self.decimal = false;
+        }
     }
     pub fn set_dec(&mut self, val: bool) {
         self.decimal = val;

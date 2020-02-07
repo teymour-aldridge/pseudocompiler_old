@@ -129,8 +129,8 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                             ' ' => {
                                 finished = true;
                             }
-                            '=' => {
-                                output_stack.push(TokenValue::Operator(Operator::Equals, loc));
+                            '/' | '+' | '-' | '*' | '.' => {
+                                input_stack = top + input_stack;
                                 finished = true;
                             }
                             '\n' => {

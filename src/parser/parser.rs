@@ -1,3 +1,9 @@
+pub enum TreeNode<T> {
+    SubNode(BTree<T>),
+    Data(T),
+    None,
+}
+
 pub struct BTree<T> {
     data: T,
     left: Option<T>,
@@ -13,3 +19,7 @@ impl BTree<T> {
         }
     }
 }
+
+impl BTree<TreeNode<T>> {}
+
+pub fn parser() {}

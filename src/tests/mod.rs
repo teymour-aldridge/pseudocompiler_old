@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     use std::any::Any;
-    use crate::parser::*;
+    use crate::parser::lexer::*;
 
     #[test]
     fn number() {

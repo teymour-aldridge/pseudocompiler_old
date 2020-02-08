@@ -93,6 +93,9 @@ pub enum Token {
     Comment(String),
     OpenBracket,
     CloseBracket,
+    OpenSquareBracket,
+    CloseSquareBracket,
+    Comma,
 }
 
 #[derive(Debug, PartialEq)]
@@ -110,7 +113,7 @@ impl TokenValue {
     }
 }
 
-pub fn get_first(input: &mut String) -> char {
+pub fn get_next(input: &mut String) -> char {
     let first = input.chars().next().unwrap();
     input.remove(0);
     first
@@ -132,7 +135,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                 let mut identifier = String::from("");
                 while !finished {
                     if input_stack.len() > 0 {
-                        top = get_first(&mut input_stack);
+                        top = get_next(&mut input_stack);
                         loc.column_num += 1;
                         match top {
                             'a'..='z' | 'A'..='Z' => {
@@ -241,7 +244,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                 let mut state = NumberState::new();
                 while !finished {
                     if input_stack.len() > 0 {
-                        top = get_first(&mut input_stack);
+                        top = get_next(&mut input_stack);
                         loc.column_num += 1;
                         match top {
                             '0'..'9' => {
@@ -311,15 +314,15 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
             '"' => {}
             '\n' => {
                 loc.line_num += 1;
-                get_first(&mut input_stack);
+                get_next(&mut input_stack);
             }
             '/' => {
                 let mut stream = input_stack.chars();
                 let mut next = stream.next().unwrap();
                 match next {
                     '/' => {
-                        get_first(&mut input_stack);
-                        get_first(&mut input_stack);
+                        get_next(&mut input_stack);
+                        get_next(&mut input_stack);
                         loc.column_num += 2;
                         output_stack.push(TokenValue::new(
                             Token::Operator(Operator::IntegerDivide),
@@ -328,7 +331,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                         ))
                     }
                     ' ' => {
-                        get_first(&mut input_stack);
+                        get_next(&mut input_stack);
                         loc.column_num += 1;
                         output_stack.push(TokenValue::new(
                             Token::Operator(Operator::Divide),
@@ -348,7 +351,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                 }
             }
             '+' => {
-                get_first(&mut input_stack);
+                get_next(&mut input_stack);
                 loc.column_num += 1;
                 output_stack.push(TokenValue::new(
                     Token::Operator(Operator::Plus),
@@ -357,7 +360,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                 ))
             }
             '-' => {
-                get_first(&mut input_stack);
+                get_next(&mut input_stack);
                 loc.column_num += 1;
                 output_stack.push(TokenValue::new(
                     Token::Operator(Operator::Minus),
@@ -366,7 +369,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                 ))
             }
             '*' => {
-                get_first(&mut input_stack);
+                get_next(&mut input_stack);
                 loc.column_num += 1;
                 output_stack.push(TokenValue::new(
                     Token::Operator(Operator::Times),
@@ -375,7 +378,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                 ))
             }
             '(' => {
-                get_first(&mut input_stack);
+                get_next(&mut input_stack);
                 loc.column_num += 1;
                 output_stack.push(TokenValue::new(
                     Token::OpenBracket,
@@ -384,7 +387,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                 ))
             }
             ')' => {
-                get_first(&mut input_stack);
+                get_next(&mut input_stack);
                 loc.column_num += 1;
                 output_stack.push(TokenValue::new(
                     Token::CloseBracket,
@@ -393,10 +396,10 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                 ))
             }
             ' ' => {
-                get_first(&mut input_stack);
+                get_next(&mut input_stack);
             }
             '=' => {
-                get_first(&mut input_stack);
+                get_next(&mut input_stack);
                 loc.column_num += 1;
                 output_stack.push(TokenValue::new(
                     Token::Operator(Operator::Equals),

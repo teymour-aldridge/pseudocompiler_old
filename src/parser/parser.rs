@@ -1,4 +1,4 @@
-use crate::parser::lexer::{Operator, TokenValue, Loc, Token, Keyword};
+use crate::parser::lexer::{Keyword, Loc, Operator, Token, TokenValue};
 use indextree::Arena;
 use std::any::Any;
 
@@ -26,9 +26,7 @@ pub struct Node {
 
 fn parse_expression() {}
 
-fn parse_if(parent: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
-
-}
+fn parse_if(parent: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {}
 
 fn parse_function() {}
 

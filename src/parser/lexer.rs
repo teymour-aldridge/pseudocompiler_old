@@ -96,8 +96,8 @@ pub enum Token {
 }
 
 pub struct TokenValue {
-    token: Token,
-    loc: Loc,
+    pub token: Token,
+    pub loc: Loc,
 }
 
 impl TokenValue {

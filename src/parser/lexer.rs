@@ -96,6 +96,7 @@ pub enum Token {
     OpenSquareBracket,
     CloseSquareBracket,
     Comma,
+    Dot,
 }
 
 #[derive(Debug, PartialEq)]
@@ -401,6 +402,10 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
             ',' => {
                 get_next(&mut input_stack);
                 output_stack.push(TokenValue::new(Token::Comma, loc.line_num, loc.column_num))
+            }
+            '.' => {
+                get_next(&mut input_stack);
+                output_stack.push(TokenValue::new(Token::Dot, loc.line_num, loc.column_num))
             }
             '=' => {
                 get_next(&mut input_stack);

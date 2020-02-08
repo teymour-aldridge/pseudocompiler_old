@@ -1,41 +1,31 @@
-use super::lexer::Loc;
-use crate::parser::lexer::Operator;
+use indextree::Arena;
+use crate::parser::lexer::{Loc, Operator};
 
-pub enum ASTItem {
-    Sequence(Loc),
+pub enum Condition {
+    Compare(Operator)
+}
+
+pub enum Node {
+    Function(Loc),
+    // The `String` is the name of the function being called.
+    Call(String, Loc),
+    Assign(Loc),
+    Operator(Operator, Loc),
     If(Loc),
     ElseIf(Loc),
-    While(Loc),
-    Return(Loc),
-    Compare(Operator, Loc),
-    Assign(Loc),
+    Condition(Condition, Loc),
+    // The `String` is the variable name
     Variable(String, Loc),
-    Operate(Operator, Loc),
-    Function(String, Loc),
 }
 
-pub enum TreeNode<T> {
-    SubNode(BTree<T>),
-    Data(T),
-    None,
+fn parse_if() {}
+
+fn parse_function() {}
+
+fn parse_while() {}
+
+fn parse_for() {}
+
+pub fn lexer() {
+    let arena = &mut Arena::new();
 }
-
-pub struct BTree<T> {
-    data: T,
-    left: Option<T>,
-    right: Option<T>,
-}
-
-impl BTree<T> {
-    pub fn new<T>(d: T, l: Option<T>, r: Option<t>) -> Self {
-        Self {
-            data: d,
-            left: l,
-            right: r,
-        }
-    }
-}
-
-impl BTree<TreeNode<T>> {}
-
-pub fn parser() {}

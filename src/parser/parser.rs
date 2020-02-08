@@ -28,6 +28,8 @@ fn parse_while() {}
 
 fn parse_for() {}
 
+fn parse_statement() {}
+
 pub fn lexer() {
     let arena = &mut Arena::new();
 }

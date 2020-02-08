@@ -1,5 +1,6 @@
 use indextree::Arena;
-use crate::parser::lexer::{Loc, Operator};
+use crate::parser::lexer::{Loc, Operator, TokenValue};
+use crate::parser::lexer::TokenValue::Keyword;
 
 pub enum Condition {
     Compare(Operator)
@@ -28,8 +29,8 @@ fn parse_while() {}
 
 fn parse_for() {}
 
-fn parse_statement() {}
+fn parse_statement(lexitem: TokenValue) {}
 
 pub fn lexer() {
-    let arena = &mut Arena::new();
+    let arena: Arena<Item> = &mut Arena::new();
 }

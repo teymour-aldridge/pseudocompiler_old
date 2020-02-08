@@ -13,7 +13,16 @@ mod tests {
     fn divide() {}
 
     #[test]
+    fn integer_divide() {}
+
+    #[test]
+    fn add() {}
+
+    #[test]
     fn multiply() {}
+
+    #[test]
+    fn minus() {}
 
     #[test]
     fn boolean() {}
@@ -23,4 +32,16 @@ mod tests {
 
     #[test]
     fn list() {}
+
+    #[test]
+    fn dot() {}
+
+    #[test]
+    fn for_loop() {}
+
+    #[test]
+    fn while_loop() {}
+
+    #[test]
+    fn function() {}
 }

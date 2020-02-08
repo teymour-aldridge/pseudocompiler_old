@@ -95,6 +95,7 @@ pub enum Token {
     CloseBracket,
 }
 
+#[derive(Debug, PartialEq)]
 pub struct TokenValue {
     pub token: Token,
     pub loc: Loc,
@@ -259,9 +260,21 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                                 }
                             }
                             '.' => {
+                                match input_stack.chars().next().unwrap() {
+                                    '0'..='9' => {}
+                                    _ => {
+                                        panic!("No digit after the '.' on line {}, column {}.", loc.line_num, loc.column_num)
+                                    }
+                                };
                                 state.set_dec(true);
                             }
                             'e' => {
+                                match input_stack.chars().next().unwrap() {
+                                    '0'..='9' => {}
+                                    _ => {
+                                        panic!("No digit after the 'e' on line {}, column {}.", loc.line_num, loc.column_num)
+                                    }
+                                };
                                 state.set_exp(true);
                             }
                             ' ' => {

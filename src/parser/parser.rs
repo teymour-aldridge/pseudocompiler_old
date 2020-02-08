@@ -32,5 +32,5 @@ fn parse_for() {}
 fn parse_statement(lexitem: TokenValue) {}
 
 pub fn lexer() {
-    let arena: Arena<Item> = &mut Arena::new();
+    let arena: &Arena<Item> = &mut Arena::new();
 }

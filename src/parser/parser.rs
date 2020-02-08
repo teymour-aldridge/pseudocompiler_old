@@ -18,7 +18,7 @@ pub enum Item {
     Variable(String, Loc),
 }
 
-fn parse_condition() {}
+fn parse_expression() {}
 
 fn parse_if() {}
 

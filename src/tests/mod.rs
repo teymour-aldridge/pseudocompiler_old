@@ -8,4 +8,19 @@ mod tests {
 
     #[test]
     fn assignment() {}
+
+    #[test]
+    fn divide() {}
+
+    #[test]
+    fn multiply() {}
+
+    #[test]
+    fn boolean() {}
+
+    #[test]
+    fn string() {}
+
+    #[test]
+    fn list() {}
 }

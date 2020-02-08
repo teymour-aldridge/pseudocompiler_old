@@ -1,9 +1,9 @@
-use indextree::Arena;
+use crate::parser::lexer::Token::Keyword;
 use crate::parser::lexer::{Loc, Operator, TokenValue};
-use crate::parser::lexer::TokenValue::Keyword;
+use indextree::Arena;
 
 pub enum Condition {
-    Compare(Operator)
+    Compare(Operator),
 }
 
 pub enum Item {

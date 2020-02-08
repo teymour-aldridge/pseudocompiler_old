@@ -1,8 +1,8 @@
 #![feature(core_panic)]
 #![feature(exclusive_range_pattern)]
 
-mod tests;
 mod parser;
+mod tests;
 
 /// Compiles a function from pseudocode into Javascript, which can then be executed in the browser
 /// using `eval`.

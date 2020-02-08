@@ -1,6 +1,7 @@
 use crate::parser::helpers::NumberState;
 
 use super::helpers;
+use crate::parser::lexer::Token::Literal;
 
 #[derive(Debug, PartialEq)]
 pub struct Number {
@@ -8,7 +9,6 @@ pub struct Number {
     pub decimal: Option<String>,
     pub base: String,
 }
-
 
 impl Number {
     pub fn new() -> Self {
@@ -22,11 +22,11 @@ impl Number {
         Self {
             exponent: match exponent {
                 Some(t) => Some(String::from(t)),
-                None => None
+                None => None,
             },
             decimal: match decimal {
                 Some(t) => Some(String::from(t)),
-                None => None
+                None => None,
             },
             base: String::from(base),
         }
@@ -84,15 +84,29 @@ pub enum Operator {
 }
 
 #[derive(Debug, PartialEq)]
-pub enum TokenValue {
-    Identifier(String, Loc),
-    Keyword(Keyword, Loc),
+pub enum Token {
+    Identifier(String),
+    Keyword(Keyword),
     Separator(String),
-    Operator(Operator, Loc),
-    Literal(LiteralValue, Loc),
-    Comment(String, Loc),
-    OpenBracket(Loc),
-    CloseBracket(Loc),
+    Operator(Operator),
+    Literal(LiteralValue),
+    Comment(String),
+    OpenBracket,
+    CloseBracket,
+}
+
+pub struct TokenValue {
+    token: Token,
+    loc: Loc,
+}
+
+impl TokenValue {
+    pub fn new(token: Token, line: i32, col: i32) -> Self {
+        Self {
+            token,
+            loc: Loc::new(line, col),
+        }
+    }
 }
 
 pub fn get_first(input: &mut String) -> char {
@@ -103,7 +117,7 @@ pub fn get_first(input: &mut String) -> char {
 
 /// Runs a lexical analysis procedure, returning a list of token values which can be used for further processing.
 pub fn lexer(input: &String) -> Vec<TokenValue> {
-// Reverse direction of string
+    // Reverse direction of string
     let mut input_stack: String = String::from(input);
     let mut output_stack: Vec<TokenValue> = Vec::new();
     let mut pos_number = 0;
@@ -123,9 +137,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                             'a'..='z' | 'A'..='Z' => {
                                 identifier.push(top);
                             }
-                            '0'..'9' => {
-                                identifier.push(top)
-                            }
+                            '0'..'9' => identifier.push(top),
                             ' ' => {
                                 finished = true;
                             }
@@ -137,62 +149,91 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                                 loc.line_num += 1;
                                 finished = true;
                             }
-                            _ => {
-                                panic!("Unexpected token {} on line {}, column {}.", top, loc.column_num, loc.line_num)
-                            }
+                            _ => panic!(
+                                "Unexpected token {} on line {}, column {}.",
+                                top, loc.column_num, loc.line_num
+                            ),
                         }
                     } else {
                         finished = true;
                     }
                     if finished {
                         match identifier.as_str() {
-                            "true" => {
-                                output_stack.push(TokenValue::Literal(LiteralValue::Bool(true), loc))
-                            }
-                            "false" => {
-                                output_stack.push(TokenValue::Literal(LiteralValue::Bool(false), loc))
-                            }
-                            "and" => {
-                                output_stack.push(TokenValue::Operator(Operator::And, loc))
-                            }
-                            "or" => {
-                                output_stack.push(TokenValue::Operator(Operator::Or, loc))
-                            }
-                            "not" => {
-                                output_stack.push(TokenValue::Operator(Operator::Not, loc))
-                            }
-                            "if" => {
-                                output_stack.push(TokenValue::Keyword(Keyword::If, loc))
-                            }
-                            "endif" => {
-                                output_stack.push(TokenValue::Keyword(Keyword::EndIf, loc))
-                            }
-                            "elseif" => {
-                                output_stack.push(TokenValue::Keyword(Keyword::ElseIf, loc))
-                            }
-                            "function" => {
-                                output_stack.push(TokenValue::Keyword(Keyword::Function, loc))
-                            }
-                            "endfunction" => {
-                                output_stack.push(TokenValue::Keyword(Keyword::EndFunction, loc))
-                            }
-                            "while" => {
-                                output_stack.push(TokenValue::Keyword(Keyword::While, loc))
-                            }
-                            "endwhile" => {
-                                output_stack.push(TokenValue::Keyword(Keyword::EndWhile, loc))
-                            }
-                            "return" => {
-                                output_stack.push(TokenValue::Keyword(Keyword::Return, loc))
-                            }
-                            _ => {
-                                output_stack.push(TokenValue::Identifier(String::from(&identifier), loc))
-                            }
+                            "true" => output_stack.push(TokenValue::new(
+                                Token::Literal(LiteralValue::Bool(true)),
+                                loc.line_num,
+                                loc.column_num,
+                            )),
+                            "false" => output_stack.push(TokenValue::new(
+                                Token::Literal(LiteralValue::Bool(false)),
+                                loc.line_num,
+                                loc.column_num,
+                            )),
+                            "and" => output_stack.push(TokenValue::new(
+                                Token::Operator(Operator::And),
+                                loc.line_num,
+                                loc.column_num,
+                            )),
+                            "or" => output_stack.push(TokenValue::new(
+                                Token::Operator(Operator::Or),
+                                loc.line_num,
+                                loc.column_num,
+                            )),
+                            "not" => output_stack.push(TokenValue::new(
+                                Token::Operator(Operator::Not),
+                                loc.line_num,
+                                loc.column_num,
+                            )),
+                            "if" => output_stack.push(TokenValue::new(
+                                Token::Keyword(Keyword::If),
+                                loc.line_num,
+                                loc.column_num,
+                            )),
+                            "endif" => output_stack.push(TokenValue::new(
+                                Token::Keyword(Keyword::EndIf),
+                                loc.line_num,
+                                loc.column_num,
+                            )),
+                            "elseif" => output_stack.push(TokenValue::new(
+                                Token::Keyword(Keyword::ElseIf),
+                                loc.line_num,
+                                loc.column_num,
+                            )),
+                            "function" => output_stack.push(TokenValue::new(
+                                Token::Keyword(Keyword::Function),
+                                loc.line_num,
+                                loc.column_num,
+                            )),
+                            "endfunction" => output_stack.push(TokenValue::new(
+                                Token::Keyword(Keyword::EndFunction),
+                                loc.line_num,
+                                loc.column_num,
+                            )),
+                            "while" => output_stack.push(TokenValue::new(
+                                Token::Keyword(Keyword::While),
+                                loc.line_num,
+                                loc.column_num,
+                            )),
+                            "endwhile" => output_stack.push(TokenValue::new(
+                                Token::Keyword(Keyword::EndWhile),
+                                loc.line_num,
+                                loc.column_num,
+                            )),
+                            "return" => output_stack.push(TokenValue::new(
+                                Token::Keyword(Keyword::EndIf),
+                                loc.line_num,
+                                loc.column_num,
+                            )),
+                            _ => output_stack.push(TokenValue::new(
+                                Token::Identifier(String::from(&identifier)),
+                                loc.line_num,
+                                loc.column_num,
+                            )),
                         }
                     }
-                };
+                }
             }
-// match number
+            // match number
             '0'..'9' => {
                 let mut finished = false;
                 let mut number = Number::new();
@@ -205,21 +246,13 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                             '0'..'9' => {
                                 if state.decimal {
                                     number.decimal = match number.decimal {
-                                        Some(dec) => {
-                                            Some(String::from(dec + &top.to_string()))
-                                        }
-                                        None => {
-                                            Some(String::from(&top.to_string()))
-                                        }
+                                        Some(dec) => Some(String::from(dec + &top.to_string())),
+                                        None => Some(String::from(&top.to_string())),
                                     };
                                 } else if state.exponent {
                                     number.exponent = match number.exponent {
-                                        Some(exp) => {
-                                            Some(String::from(exp + &top.to_string()))
-                                        }
-                                        None => {
-                                            Some(String::from(&top.to_string()))
-                                        }
+                                        Some(exp) => Some(String::from(exp + &top.to_string())),
+                                        None => Some(String::from(&top.to_string())),
                                     }
                                 } else {
                                     number.base = String::from(number.base) + &top.to_string()
@@ -238,15 +271,24 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                                 loc.line_num += 1;
                                 finished = true;
                             }
-                            _ => {
-                                panic!("Unexpected token {} on line {}, column {}.", top, loc.column_num, loc.line_num)
-                            }
+                            _ => panic!(
+                                "Unexpected token {} on line {}, column {}.",
+                                top, loc.column_num, loc.line_num
+                            ),
                         }
                     } else {
                         finished = true;
                     }
                     if finished {
-                        output_stack.push(TokenValue::Literal(LiteralValue::Number(Number::from_values(&number.exponent, &number.decimal, &number.base)), loc));
+                        output_stack.push(TokenValue::new(
+                            Token::Literal(LiteralValue::Number(Number::from_values(
+                                &number.exponent,
+                                &number.decimal,
+                                &number.base,
+                            ))),
+                            loc.line_num,
+                            loc.column_num,
+                        ));
                     }
                 }
             }
@@ -264,47 +306,78 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                         get_first(&mut input_stack);
                         get_first(&mut input_stack);
                         loc.column_num += 2;
-                        output_stack.push(TokenValue::Operator(Operator::IntegerDivide, loc))
+                        output_stack.push(TokenValue::new(
+                            Token::Operator(Operator::IntegerDivide),
+                            loc.line_num,
+                            loc.column_num,
+                        ))
                     }
                     ' ' => {
                         get_first(&mut input_stack);
                         loc.column_num += 1;
-                        output_stack.push(TokenValue::Operator(Operator::Divide, loc))
+                        output_stack.push(TokenValue::new(
+                            Token::Operator(Operator::Divide),
+                            loc.line_num,
+                            loc.column_num,
+                        ))
                     }
-                    '0'..'9' => {
-                        get_first(&mut input_stack);
-                        loc.column_num += 1;
-                        output_stack.push(TokenValue::Operator(Operator::Divide, loc))
+                    '0'..='9' => {
+                        output_stack.push(TokenValue::new(
+                            Token::Operator(Operator::Divide),
+                            loc.line_num,
+                            loc.column_num,
+                        ))
                     }
-                    _ => {
-                        panic!("Unexpected token {} on line {}, column {}.", top, loc.column_num, loc.line_num)
-                    }
+                    _ => panic!(
+                        "Unexpected token {} on line {}, column {}.",
+                        top, loc.column_num, loc.line_num
+                    ),
                 }
             }
             '+' => {
                 get_first(&mut input_stack);
                 loc.column_num += 1;
-                output_stack.push(TokenValue::Operator(Operator::Plus, loc))
+                output_stack.push(TokenValue::new(
+                    Token::Operator(Operator::Plus),
+                    loc.line_num,
+                    loc.column_num,
+                ))
             }
             '-' => {
                 get_first(&mut input_stack);
                 loc.column_num += 1;
-                output_stack.push(TokenValue::Operator(Operator::Minus, loc))
+                output_stack.push(TokenValue::new(
+                    Token::Operator(Operator::Minus),
+                    loc.line_num,
+                    loc.column_num,
+                ))
             }
             '*' => {
                 get_first(&mut input_stack);
                 loc.column_num += 1;
-                output_stack.push(TokenValue::Operator(Operator::Times, loc))
+                output_stack.push(TokenValue::new(
+                    Token::Operator(Operator::Times),
+                    loc.line_num,
+                    loc.column_num,
+                ))
             }
             '(' => {
                 get_first(&mut input_stack);
                 loc.column_num += 1;
-                output_stack.push(TokenValue::OpenBracket(loc))
+                output_stack.push(TokenValue::new(
+                    Token::OpenBracket,
+                    loc.line_num,
+                    loc.column_num,
+                ))
             }
             ')' => {
                 get_first(&mut input_stack);
                 loc.column_num += 1;
-                output_stack.push(TokenValue::CloseBracket(loc))
+                output_stack.push(TokenValue::new(
+                    Token::CloseBracket,
+                    loc.line_num,
+                    loc.column_num,
+                ))
             }
             ' ' => {
                 get_first(&mut input_stack);
@@ -312,12 +385,17 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
             '=' => {
                 get_first(&mut input_stack);
                 loc.column_num += 1;
-                output_stack.push(TokenValue::Operator(Operator::Equals, loc))
+                output_stack.push(TokenValue::new(
+                    Token::Operator(Operator::Equals),
+                    loc.line_num,
+                    loc.column_num,
+                ))
             }
-            _ => {
-                panic!("Found an invalid token {} at line {}, column {}.", top, loc.line_num, loc.column_num)
-            }
+            _ => panic!(
+                "Found an invalid token {} at line {}, column {}.",
+                top, loc.line_num, loc.column_num
+            ),
         };
-    };
+    }
     output_stack
 }

@@ -398,6 +398,10 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
             ' ' => {
                 get_next(&mut input_stack);
             }
+            ',' => {
+                get_next(&mut input_stack);
+                output_stack.push(TokenValue::new(Token::Comma, loc.line_num, loc.column_num))
+            }
             '=' => {
                 get_next(&mut input_stack);
                 loc.column_num += 1;

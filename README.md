@@ -11,7 +11,7 @@ A compiler for pseudocode, inspired by the [OCR specification](https://www.ocr.o
             1. > Dynamic URLs generated using compression
             2. > Allow users to share test cases
             3. > Allow users to share finished code
-2. > Turn pseudocode into LLVM IR.
+2. > Turn pseudocode into LLVM IR so that it can be run on local machines.
 
 Please note that this compiler comes with **no warranty**.
 
@@ -79,5 +79,3 @@ float(<expression>) // Converts a value to a floating-point integer
 ```
 <identifier>[<expression>] = <expression>
 ```
-# Acknowledgments
-* 

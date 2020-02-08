@@ -5,7 +5,7 @@ pub enum Condition {
     Compare(Operator)
 }
 
-pub enum Node {
+pub enum Item {
     Function(Loc),
     // The `String` is the name of the function being called.
     Call(String, Loc),
@@ -17,6 +17,8 @@ pub enum Node {
     // The `String` is the variable name
     Variable(String, Loc),
 }
+
+fn parse_condition() {}
 
 fn parse_if() {}
 

@@ -321,13 +321,11 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                             loc.column_num,
                         ))
                     }
-                    '0'..='9' => {
-                        output_stack.push(TokenValue::new(
-                            Token::Operator(Operator::Divide),
-                            loc.line_num,
-                            loc.column_num,
-                        ))
-                    }
+                    '0'..='9' => output_stack.push(TokenValue::new(
+                        Token::Operator(Operator::Divide),
+                        loc.line_num,
+                        loc.column_num,
+                    )),
                     _ => panic!(
                         "Unexpected token {} on line {}, column {}.",
                         top, loc.column_num, loc.line_num

@@ -1,5 +1,5 @@
 #[cfg(test)]
-mod tests {
+mod lexer_tests {
     use crate::parser::lexer::*;
     use std::any::Any;
 

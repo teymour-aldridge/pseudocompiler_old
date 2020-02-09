@@ -24,6 +24,10 @@ pub struct Node {
     item: Item,
 }
 
+fn parse_boolean() {}
+
+fn parse_arithmetic() {}
+
 fn parse_expression() {}
 
 fn parse_if(parent: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {}

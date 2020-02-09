@@ -1,4 +1,4 @@
-use crate::parser::lexer::{Keyword, Loc, Operator, Token, TokenValue, LiteralValue, Number};
+use crate::parser::lexer::{Keyword, LiteralValue, Loc, Number, Operator, Token, TokenValue};
 use indextree::{Arena, NodeId};
 
 pub enum Item {
@@ -27,8 +27,8 @@ pub fn priority(o: &Operator) -> u32 {
         Operator::And => 2,
         Operator::Or => 1,
         Operator::Not => 5,
-// This is kept here in case more operators are to be added
-        _ => 0
+        // This is kept here in case more operators are to be added
+        _ => 0,
     }
 }
 
@@ -39,10 +39,7 @@ pub struct Node {
 
 impl Node {
     pub fn new(item: Item, loc: Loc) -> Self {
-        Self {
-            item,
-            loc,
-        }
+        Self { item, loc }
     }
 }
 
@@ -75,9 +72,7 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
                     Token::Identifier(s) => {
                         operand_stack.push(Item::Identifier(s));
                     }
-                    Token::Literal(LiteralValue::Number(n)) => {
-                        operand_stack.push(Item::Number(n))
-                    }
+                    Token::Literal(LiteralValue::Number(n)) => operand_stack.push(Item::Number(n)),
                     _ => {}
                 }
             }
@@ -90,7 +85,10 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
 }
 
 fn parse_if(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
-    let expression = arena.new_node(Node::new(Item::Expression, tokens.iter().next().unwrap().loc));
+    let expression = arena.new_node(Node::new(
+        Item::Expression,
+        tokens.iter().next().unwrap().loc,
+    ));
     parent.append(expression, arena);
     parse_expression(&expression, arena, tokens);
 }
@@ -100,7 +98,6 @@ fn parse_while() {}
 fn parse_for() {}
 
 fn parse_function() {}
-
 
 fn parse_statement(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
     let mut lexitem = tokens.pop().unwrap();

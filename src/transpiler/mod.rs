@@ -6,7 +6,7 @@ use regex::Regex;
 
 lazy_static! {
     static ref FUNCTION: Regex = Regex::new(r"function [\w\W]+\([\w ,]+\)").unwrap();
-    static ref WHILE: Regex = Regex::new(r"while [\w\W]+")
+    static ref WHILE: Regex = Regex::new(r"while [\w\W]+");
     static ref ENDBLOCK: Regex = Regex::new(r"end[\w+]+").unwrap();
 }
 

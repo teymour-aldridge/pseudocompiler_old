@@ -54,7 +54,7 @@ fn parse_assignment() {}
 /// This is an implementation of the Shunting-Yard algorithm.
 fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
     let mut operator_stack: Vec<Operator> = Vec::new();
-    let mut operand_stack: Vec<Item> = Vec::new();
+    let mut operand_stack: Vec<TokenValue> = Vec::new();
     let mut finished = false;
     while !finished {
         let next: &TokenValue = tokens.iter().next().unwrap();
@@ -66,13 +66,35 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
                         if priority(&o) > priority(operator_stack.iter().next().unwrap()) {
                             operator_stack.push(o);
                         } else {
-                            // make a tree from the operator and two operands
+                            let mut lower = false;
+                            while !lower {
+                                let o_1 = operand_stack.pop().unwrap();
+                                let o_2 = operand_stack.pop().unwrap();
+                                let n_1 = arena.new_node(match o_1.token {
+                                    Token::Literal(LiteralValue::Number(n)) => {
+                                        Node::new(Item::Number(n), o_1.loc)
+                                    }
+                                    Token::Literal(LiteralValue::String(s)) => {
+                                        Node::new(Item::Identifier(s), o_1.loc)
+                                    }
+                                    _ => { panic!("Invalid token on line {} column {}", o_1.loc.line_num, o_1.loc.column_num) }
+                                });
+                                let n_2 = arena.new_node(match o_2.token {
+                                    Token::Literal(LiteralValue::Number(n)) => {
+                                        Node::new(Item::Number(n), o_2.loc)
+                                    }
+                                    Token::Literal(LiteralValue::String(s)) => {
+                                        Node::new(Item::Identifier(s), o_2.loc)
+                                    }
+                                    _ => { panic!("Invalid token on line {} column {}", o_2.loc.line_num, o_2.loc.column_num) }
+                                });
+                            }
                         }
                     }
-                    Token::Identifier(s) => {
-                        operand_stack.push(Item::Identifier(s));
+                    Token::Identifier(_) => {
+                        operand_stack.push(t.clone());
                     }
-                    Token::Literal(LiteralValue::Number(n)) => operand_stack.push(Item::Number(n)),
+                    Token::Literal(LiteralValue::Number(_)) => operand_stack.push(t.clone()),
                     _ => {}
                 }
             }

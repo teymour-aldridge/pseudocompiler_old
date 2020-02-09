@@ -3,7 +3,7 @@ use crate::parser::helpers::NumberState;
 use super::helpers;
 use crate::parser::lexer::Token::Literal;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Number {
     pub exponent: Option<String>,
     pub decimal: Option<String>,
@@ -33,14 +33,14 @@ impl Number {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum LiteralValue {
     Number(Number),
     Bool(bool),
     String(String),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Keyword {
     If,
     ElseIf,
@@ -69,7 +69,7 @@ impl Loc {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Operator {
     Plus,
     Minus,
@@ -83,7 +83,7 @@ pub enum Operator {
     Equals,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Token {
     Identifier(String),
     Keyword(Keyword),
@@ -97,9 +97,11 @@ pub enum Token {
     CloseSquareBracket,
     Comma,
     Dot,
+    EndOfSequence,
+    NewLine,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct TokenValue {
     pub token: Token,
     pub loc: Loc,
@@ -314,6 +316,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
             // match a string
             '"' => {}
             '\n' => {
+                output_stack.push(TokenValue::new(Token::NewLine, loc.line_num, loc.column_num));
                 loc.line_num += 1;
                 get_next(&mut input_stack);
             }
@@ -422,5 +425,6 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
             ),
         };
     }
+    output_stack.push(TokenValue::new(Token::EndOfSequence, loc.line_num, loc.column_num));
     output_stack
 }

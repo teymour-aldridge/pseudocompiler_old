@@ -1,10 +1,5 @@
-use crate::parser::lexer::{Keyword, Loc, Operator, Token, TokenValue};
+use crate::parser::lexer::{Keyword, Loc, Operator, Token, TokenValue, LiteralValue, Number};
 use indextree::{Arena, NodeId};
-use std::any::Any;
-
-pub enum Condition {
-    Compare(Operator),
-}
 
 pub enum Item {
     Function,
@@ -14,10 +9,27 @@ pub enum Item {
     Operator(Operator),
     If,
     ElseIf,
-    Condition(Condition),
-    // The `String` is the variable name
-    Variable(String),
+    // The `String` is the identifier name
+    Identifier(String),
     Expression,
+    Number(Number),
+}
+
+pub fn priority(o: &Operator) -> u32 {
+    match o {
+        Operator::Times => 5,
+        Operator::Divide => 5,
+        Operator::IntegerDivide => 5,
+        Operator::Plus => 4,
+        Operator::Minus => 4,
+        Operator::Equals => 3,
+        Operator::Modulo => 5,
+        Operator::And => 2,
+        Operator::Or => 1,
+        Operator::Not => 5,
+// This is kept here in case more operators are to be added
+        _ => 0
+    }
 }
 
 pub struct Node {
@@ -40,7 +52,42 @@ fn parse_arithmetic() {}
 
 fn parse_assignment() {}
 
-fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {}
+/// E -> E "+" E | E "-" E | E "/" E | E "//" E | E "*" E | E "or" E | E "and" E | "not" E | N
+/// N
+/// This is an implementation of the Shunting-Yard algorithm.
+fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
+    let mut operator_stack: Vec<Operator> = Vec::new();
+    let mut operand_stack: Vec<Item> = Vec::new();
+    let mut finished = false;
+    while !finished {
+        let next: &TokenValue = tokens.iter().next().unwrap();
+        match &next.token {
+            Token::Operator(o) => {
+                let t = tokens.pop().unwrap();
+                match t.token {
+                    Token::Operator(o) => {
+                        if priority(&o) > priority(operator_stack.iter().next().unwrap()) {
+                            operator_stack.push(o);
+                        } else {
+                            // make a tree from the operator and two operands
+                        }
+                    }
+                    Token::Identifier(s) => {
+                        operand_stack.push(Item::Identifier(s));
+                    }
+                    Token::Literal(LiteralValue::Number(n)) => {
+                        operand_stack.push(Item::Number(n))
+                    }
+                    _ => {}
+                }
+            }
+            Token::Identifier(_) | Token::Literal(_) => {}
+            _ => {
+                finished = true;
+            }
+        }
+    }
+}
 
 fn parse_if(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
     let expression = arena.new_node(Node::new(Item::Expression, tokens.iter().next().unwrap().loc));

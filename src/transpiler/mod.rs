@@ -1,41 +1,18 @@
-use crate::parser::lexer::{TokenValue, Token, Keyword};
+use crate::parser::lexer::{Keyword, Token, TokenValue};
+use std::process::Output;
 
-pub fn to_js(tokens: &mut Vec<TokenValue>) -> String {
-    let mut finished = false;
-    let mut output = String::new();
-    while !finished {
-        let next = tokens.pop().unwrap();
-        match next.token {
-            Token::Keyword(k) => {
-                match k {
-                    Keyword::Function => {
-                        let next = tokens.pop().unwrap();
-                        if next.token != Token::OpenBracket {
-                            panic!("Expected an opening bracket after a function declaration on line {}, column {}.", next.loc.line_num, next.loc.column_num)
-                        }
-                        let mut close_bracket = false;
-                        while !close_bracket {
-                            let mut close_token = tokens.pop().unwrap();
-                            match close_token.token {
-                                Token::CloseBracket => {
-                                    close_bracket = true;
-                                }
-                                Token::Identifier(_) => {}
-                                Token::Comma => {}
-                                Token::EndOfSequence => {
-                                    panic!("Missing close bracket after opening bracket in the function defenition on line {}, column {}.", next.loc.line_num, next.loc.column_num)
-                                }
-                                _ => {
-                                    panic!("Unexpected token on line {}, column {}!", close_token.loc.line_num, close_token.loc.column_num)
-                                }
-                            }
-                        }
-                    }
-                    _ => {}
-                }
-            }
-            _ => {}
-        }
-    }
-    output
+use lazy_static::lazy_static;
+use regex::Regex;
+
+lazy_static! {
+    static ref FUNCTION: Regex = Regex::new(r"function [\w\W]+\([\w ,]+\)").unwrap();
+    static ref WHILE: Regex = Regex::new(r"while [\w\W]+")
+    static ref ENDBLOCK: Regex = Regex::new(r"end[\w+]+").unwrap();
+}
+
+pub fn to_js(str: String) -> String {
+    let mut string: String = String::from(str);
+    FUNCTION.replace(&mut string, "$& {");
+    ENDBLOCK.replace(&mut string, "}");
+    string
 }

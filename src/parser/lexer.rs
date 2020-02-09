@@ -316,7 +316,11 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
             // match a string
             '"' => {}
             '\n' => {
-                output_stack.push(TokenValue::new(Token::NewLine, loc.line_num, loc.column_num));
+                output_stack.push(TokenValue::new(
+                    Token::NewLine,
+                    loc.line_num,
+                    loc.column_num,
+                ));
                 loc.line_num += 1;
                 get_next(&mut input_stack);
             }
@@ -425,6 +429,10 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
             ),
         };
     }
-    output_stack.push(TokenValue::new(Token::EndOfSequence, loc.line_num, loc.column_num));
+    output_stack.push(TokenValue::new(
+        Token::EndOfSequence,
+        loc.line_num,
+        loc.column_num,
+    ));
     output_stack
 }

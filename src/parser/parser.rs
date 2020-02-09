@@ -77,7 +77,10 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
                                     Token::Literal(LiteralValue::String(s)) => {
                                         Node::new(Item::Identifier(s), o_1.loc)
                                     }
-                                    _ => { panic!("Invalid token on line {} column {}", o_1.loc.line_num, o_1.loc.column_num) }
+                                    _ => panic!(
+                                        "Invalid token on line {} column {}",
+                                        o_1.loc.line_num, o_1.loc.column_num
+                                    ),
                                 });
                                 let n_2 = arena.new_node(match o_2.token {
                                     Token::Literal(LiteralValue::Number(n)) => {
@@ -86,7 +89,10 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
                                     Token::Literal(LiteralValue::String(s)) => {
                                         Node::new(Item::Identifier(s), o_2.loc)
                                     }
-                                    _ => { panic!("Invalid token on line {} column {}", o_2.loc.line_num, o_2.loc.column_num) }
+                                    _ => panic!(
+                                        "Invalid token on line {} column {}",
+                                        o_2.loc.line_num, o_2.loc.column_num
+                                    ),
                                 });
                             }
                         }

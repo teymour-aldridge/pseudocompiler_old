@@ -13,6 +13,7 @@ pub enum Item {
     Identifier(String),
     Expression,
     Number(Number),
+    While
 }
 
 pub fn priority(o: &Operator) -> u32 {
@@ -51,7 +52,7 @@ fn parse_assignment() {}
 
 /// E -> E "+" E | E "-" E | E "/" E | E "//" E | E "*" E | E "or" E | E "and" E | "not" E | N
 /// N
-/// This is an implementation of the Shunting-Yard algorithm.
+/// This is an implementation of the Shunting-Yard algorithm (sort-of).
 fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
     let mut operator_stack: Vec<Operator> = Vec::new();
     let mut operand_stack: Vec<TokenValue> = Vec::new();
@@ -121,7 +122,10 @@ fn parse_if(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValu
     parse_expression(&expression, arena, tokens);
 }
 
-fn parse_while(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {}
+fn parse_while(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
+    let n = arena.new_node(Node::new(Item::While, tokens.iter().next().unwrap().loc));
+    parent.append(n, arena);
+}
 
 fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {}
 

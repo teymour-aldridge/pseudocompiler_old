@@ -136,13 +136,15 @@ fn parse_while(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenV
             Token::EndOfSequence => {
                 panic!("Expected a 'do' token following the while loop on line {}, column {}.", do_token.loc.line_num, do_token.loc.column_num)
             }
+            Token::NewLine => {
+                panic!("Expected a 'do' token following the while loop on line {}, column {}.", do_token.loc.line_num, do_token.loc.column_num)
+            }
             _ => {
                 expression.push(do_token);
             }
         }
     }
     parse_expression(&n, arena, &mut expression);
-
     parse_statement(parent, arena, tokens);
     let end_token = tokens.pop().unwrap();
     if end_token.token != Token::Keyword(Keyword::EndWhile) {
@@ -150,7 +152,10 @@ fn parse_while(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenV
     }
 }
 
-fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {}
+fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
+    let n = arena.new_node(Node::new(Item::While, arena.get(*parent).unwrap().get().loc));
+    parent.append(n, arena);
+}
 
 fn parse_function(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {}
 

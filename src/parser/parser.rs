@@ -13,7 +13,7 @@ pub enum Item {
     Identifier(String),
     Expression,
     Number(Number),
-    While
+    While,
 }
 
 pub fn priority(o: &Operator) -> u32 {
@@ -123,8 +123,31 @@ fn parse_if(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValu
 }
 
 fn parse_while(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
-    let n = arena.new_node(Node::new(Item::While, tokens.iter().next().unwrap().loc));
+    let n = arena.new_node(Node::new(Item::While, arena.get(*parent).unwrap().get().loc));
     parent.append(n, arena);
+    let mut do_token_found = false;
+    let mut expression: Vec<TokenValue> = Vec::new();
+    while !do_token_found {
+        let do_token = tokens.pop().unwrap();
+        match do_token.token {
+            Token::Keyword(Keyword::Do) => {
+                do_token_found = true;
+            }
+            Token::EndOfSequence => {
+                panic!("Expected a 'do' token following the while loop on line {}, column {}.", do_token.loc.line_num, do_token.loc.column_num)
+            }
+            _ => {
+                expression.push(do_token);
+            }
+        }
+    }
+    parse_expression(&n, arena, &mut expression);
+
+    parse_statement(parent, arena, tokens);
+    let end_token = tokens.pop().unwrap();
+    if end_token.token != Token::Keyword(Keyword::EndWhile) {
+        panic!("Expected the keyword 'endwhile' on line {}, column {}", end_token.loc.line_num, end_token.loc.column_num)
+    }
 }
 
 fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {}

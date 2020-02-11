@@ -52,6 +52,7 @@ pub enum Keyword {
     Function,
     EndFunction,
     Return,
+    Do
 }
 
 #[derive(Debug, Copy, Clone, PartialEq)]

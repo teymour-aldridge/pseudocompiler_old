@@ -254,6 +254,11 @@ fn parse_statement(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<To
             parent.append(new_node, arena);
             parse_for(&new_node, arena, tokens)
         }
+        Token::Keyword(Keyword::Function) => {
+            let new_node = arena.new_node(Node::new(Item::Function, lexitem.loc));
+            parent.append(new_node, arena);
+            parse_function(&new_node, arena, tokens);
+        }
         _ => panic!(
             "Unexpected term on line {}, column {}.",
             lexitem.loc.line_num, lexitem.loc.column_num

@@ -125,7 +125,10 @@ fn parse_if(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValu
 }
 
 fn parse_while(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
-    let n = arena.new_node(Node::new(Item::While, arena.get(*parent).unwrap().get().loc));
+    let n = arena.new_node(Node::new(
+        Item::While,
+        arena.get(*parent).unwrap().get().loc,
+    ));
     parent.append(n, arena);
     let mut do_token_found = false;
     let mut expression: Vec<TokenValue> = Vec::new();
@@ -135,12 +138,14 @@ fn parse_while(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenV
             Token::Keyword(Keyword::Do) => {
                 do_token_found = true;
             }
-            Token::EndOfSequence => {
-                panic!("Expected a 'do' token following the while loop on line {}, column {}.", do_token.loc.line_num, do_token.loc.column_num)
-            }
-            Token::NewLine => {
-                panic!("Expected a 'do' token following the while loop on line {}, column {}.", do_token.loc.line_num, do_token.loc.column_num)
-            }
+            Token::EndOfSequence => panic!(
+                "Expected a 'do' token following the while loop on line {}, column {}.",
+                do_token.loc.line_num, do_token.loc.column_num
+            ),
+            Token::NewLine => panic!(
+                "Expected a 'do' token following the while loop on line {}, column {}.",
+                do_token.loc.line_num, do_token.loc.column_num
+            ),
             _ => {
                 expression.push(do_token);
             }
@@ -150,7 +155,10 @@ fn parse_while(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenV
     parse_statement(parent, arena, tokens);
     let end_token = tokens.pop().unwrap();
     if end_token.token != Token::Keyword(Keyword::EndWhile) {
-        panic!("Expected the keyword 'endwhile' on line {}, column {}", end_token.loc.line_num, end_token.loc.column_num)
+        panic!(
+            "Expected the keyword 'endwhile' on line {}, column {}",
+            end_token.loc.line_num, end_token.loc.column_num
+        )
     }
 }
 
@@ -161,9 +169,10 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
         Token::Identifier(s) => {
             count_variable = s;
         }
-        _ => {
-            panic!("Expected a variable after the keyword 'for' on line {}, column {}", identifier.loc.line_num, identifier.loc.column_num)
-        }
+        _ => panic!(
+            "Expected a variable after the keyword 'for' on line {}, column {}",
+            identifier.loc.line_num, identifier.loc.column_num
+        ),
     }
     let equals_sign = tokens.pop().unwrap();
     let mut is_count = false;
@@ -174,9 +183,10 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
         Token::Operator(Operator::In) => {
             is_count = false;
         }
-        _ => {
-            panic!("Expected an equals sign after the variable {} in the for loop on line {}, column {}", count_variable, equals_sign.loc.line_num, equals_sign.loc.column_num)
-        }
+        _ => panic!(
+            "Expected an equals sign after the variable {} in the for loop on line {}, column {}",
+            count_variable, equals_sign.loc.line_num, equals_sign.loc.column_num
+        ),
     }
     if is_count {
         let mut expression_block_1: Vec<TokenValue> = Vec::new();
@@ -187,9 +197,7 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
                 Token::Keyword(Keyword::To) => {
                     e_1 = true;
                 }
-                _ => {
-                    expression_block_1.push(next_token)
-                }
+                _ => expression_block_1.push(next_token),
             }
         }
         let mut e_2 = false;
@@ -200,14 +208,13 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
                 Token::Keyword(Keyword::Do) => {
                     e_2 = true;
                 }
-                _ => {
-                    expression_block_2.push(next_token)
-                }
+                _ => expression_block_2.push(next_token),
             }
         }
         let n = arena.new_node(Node::new(Item::For, arena.get(*parent).unwrap().get().loc));
         parent.append(n, arena);
-    } else {}
+    } else {
+    }
 }
 
 fn parse_function(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {}

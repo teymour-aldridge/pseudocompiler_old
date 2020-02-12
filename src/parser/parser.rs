@@ -236,6 +236,8 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
 
 fn parse_function(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {}
 
+fn parse_function_call(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {}
+
 fn parse_statement(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
     let mut lexitem = tokens.pop().unwrap();
     match lexitem.token {
@@ -258,6 +260,26 @@ fn parse_statement(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<To
             let new_node = arena.new_node(Node::new(Item::Function, lexitem.loc));
             parent.append(new_node, arena);
             parse_function(&new_node, arena, tokens);
+        }
+        Token::Identifier(s) => {
+            let next = tokens.pop().unwrap();
+            match next.token {
+                Token::Operator(Operator::Equals) => {
+                    let new_node = arena.new_node(Node::new(Item::Assign, lexitem.loc));
+                    parent.append(new_node, arena);
+                    let var_name = arena.new_node(Node::new(Item::Identifier(s), lexitem.loc));
+                    let assign_expression = arena.new_node(Node::new(Item::Expression, next.loc));
+                    new_node.append(var_name, arena);
+                    new_node.append(assign_expression, arena);
+                    parse_expression(&assign_expression, arena, tokens)
+                }
+                _ => {
+                    panic!(
+                        "Invalid token on line {}, column {}.",
+                        next.loc.line_num, next.loc.column_num
+                    );
+                }
+            }
         }
         _ => panic!(
             "Unexpected term on line {}, column {}.",

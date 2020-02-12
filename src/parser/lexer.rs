@@ -52,7 +52,8 @@ pub enum Keyword {
     Function,
     EndFunction,
     Return,
-    Do
+    Do,
+    To
 }
 
 #[derive(Debug, Copy, Clone, PartialEq)]
@@ -82,6 +83,7 @@ pub enum Operator {
     Or,
     Not,
     Equals,
+    In
 }
 
 #[derive(Debug, PartialEq, Clone)]

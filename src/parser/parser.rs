@@ -163,6 +163,9 @@ fn parse_while(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenV
 }
 
 fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
+    let n = arena.new_node(Node::new(Item::For, arena.get(*parent).unwrap().get().loc));
+    parent.append(n, arena);
+
     let mut count_variable = String::new();
     let identifier = tokens.pop().unwrap();
     match identifier.token {
@@ -200,6 +203,7 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
                 _ => expression_block_1.push(next_token),
             }
         }
+        parse_expression(&n, arena, &mut expression_block_1);
         let mut e_2 = false;
         let mut expression_block_2: Vec<TokenValue> = Vec::new();
         while !e_2 {
@@ -211,9 +215,22 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
                 _ => expression_block_2.push(next_token),
             }
         }
-        let n = arena.new_node(Node::new(Item::For, arena.get(*parent).unwrap().get().loc));
-        parent.append(n, arena);
+        parse_expression(&n, arena, &mut expression_block_2);
     } else {
+        let identifier_token = tokens.pop().unwrap();
+        let mut in_identifier = String::new();
+        match identifier_token.token {
+            Token::Identifier(s) => in_identifier = s,
+            _ => {}
+        }
+        let in_token = tokens.pop().unwrap();
+        match in_token.token {
+            Token::Operator(Operator::In) => {}
+            _ => panic!(
+                "Expected an 'in' after the variable in the for loop on line {}, column {}",
+                equals_sign.loc.line_num, equals_sign.loc.column_num
+            ),
+        }
     }
 }
 

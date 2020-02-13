@@ -85,7 +85,7 @@ pub enum Operator {
     Equals,
     In,
     // Not used as part of the lexer (only in the parser)
-    Empty
+    Empty,
 }
 
 #[derive(Debug, PartialEq, Clone)]

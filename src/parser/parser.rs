@@ -18,20 +18,25 @@ pub enum Item {
     Body,
 }
 
-pub fn priority(o: &Operator) -> u32 {
-    match o {
-        Operator::Times => 5,
-        Operator::Divide => 5,
-        Operator::IntegerDivide => 5,
-        Operator::Plus => 4,
-        Operator::Minus => 4,
-        Operator::Equals => 3,
-        Operator::Modulo => 5,
-        Operator::And => 2,
-        Operator::Or => 1,
-        Operator::Not => 5,
-        // This is kept here in case more operators are to be added
-        _ => 0,
+pub fn priority(o: &TokenValue) -> u32 {
+    match &o.token {
+        Token::Operator(o) => {
+            match o {
+                Operator::Times => 5,
+                Operator::Divide => 5,
+                Operator::IntegerDivide => 5,
+                Operator::Plus => 4,
+                Operator::Minus => 4,
+                Operator::Equals => 3,
+                Operator::Modulo => 5,
+                Operator::And => 2,
+                Operator::Or => 1,
+                Operator::Not => 5,
+                // This is kept here in case more operators are to be added
+                _ => 0,
+            }
+        }
+        _ => panic!("Not an operator."),
     }
 }
 
@@ -56,21 +61,35 @@ fn parse_assignment() {}
 /// N
 /// This is an implementation of the Shunting-Yard algorithm (sort-of).
 fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
-    let mut operator_stack: Vec<Operator> = vec![Operator::Empty];
+    let mut operator_stack: Vec<TokenValue> =
+        vec![TokenValue::new(Token::Operator(Operator::Empty), 0, 0)];
     let mut operand_stack: Vec<TokenValue> = Vec::new();
+    let mut output_stack: Vec<TokenValue> = Vec::new();
     let mut finished = false;
     while !finished {
         let next = tokens.pop().unwrap();
         match next.token {
-            Token::Operator(o) => {
-                if priority(&operator_stack.iter().next().unwrap()) > priority(&o) {
-                    operator_stack.push(o)
-                } else {}
+            Token::Operator(_) => {
+                if priority(operator_stack.get(0).unwrap()) > priority(&next) {
+                    operator_stack.push(next.clone())
+                } else {
+                    let mut parsed = false;
+                    while !parsed {
+                        for item in operator_stack.clone() {
+                            if priority(&item) < priority(&next) {
+                                output_stack.push(operator_stack.pop().unwrap());
+                            }
+                        }
+                    }
+                }
             }
             Token::Identifier(_) | Token::Literal(LiteralValue::Number(_)) => {}
             Token::OpenBracket => {}
             Token::CloseBracket => {}
-            _ => panic!("Invalid token in the expression on line {}, column {}.", next.loc.line_num, next.loc.column_num)
+            _ => panic!(
+                "Invalid token in the expression on line {}, column {}.",
+                next.loc.line_num, next.loc.column_num
+            ),
         }
     }
 }

@@ -177,13 +177,15 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
                     for i in 1..to_pop {
                         nodes.push(stack.pop().unwrap())
                     }
-                    let function_call = arena.new_node(Node::new(Item::Call(String::from(s)), item.loc));
+                    let function_call =
+                        arena.new_node(Node::new(Item::Call(String::from(s)), item.loc));
                     for item in nodes {
                         function_call.append(item, arena)
                     }
                 }
                 Token::Operator(o) => {
-                    let operator_node = arena.new_node(Node::new(Item::Operator(o.clone()), item.loc));
+                    let operator_node =
+                        arena.new_node(Node::new(Item::Operator(o.clone()), item.loc));
                     operator_node.append(stack.pop().unwrap(), arena);
                     operator_node.append(stack.pop().unwrap(), arena);
                 }

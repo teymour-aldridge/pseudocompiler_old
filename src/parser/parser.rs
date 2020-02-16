@@ -87,7 +87,8 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
                 } else if priority(&next) == priority(operator_stack.get(0).unwrap()) {
                     output_stack.push(operator_stack.pop().unwrap());
                     operator_stack.push(next)
-                } else {}
+                } else {
+                }
             }
             Token::Literal(LiteralValue::Number(n)) => {}
             Token::Keyword(Keyword::Function) => {

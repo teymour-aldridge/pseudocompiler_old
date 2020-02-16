@@ -193,6 +193,7 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
             }
         }
     }
+    parent.append(stack.pop().unwrap(), arena);
 }
 
 fn parse_if(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {

@@ -1,4 +1,3 @@
-#![feature(core_panic)]
 #![feature(exclusive_range_pattern)]
 
 mod parser;

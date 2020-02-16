@@ -79,7 +79,6 @@ impl Node {
     }
 }
 
-/// Turns an infix string into a postfix string.
 fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
     let mut operator_stack: Vec<TokenValue> =
         vec![TokenValue::new(Token::Operator(Operator::Empty), 0, 0)];

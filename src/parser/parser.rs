@@ -141,6 +141,9 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
                 }
                 operator_stack.pop().unwrap();
             }
+            Token::EndOfSequence => {
+                finished = true;
+            }
             _ => panic!("Invalid token found in an expression on line {}, column {}"),
         }
     }

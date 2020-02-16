@@ -465,7 +465,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                     '=' => {
                         loc.column_num += 1;
                         output_stack.push(TokenValue::new(
-                            Token::Operator(Operator::Equals),
+                            Token::Operator(Operator::NotEquals),
                             loc.line_num,
                             loc.column_num,
                         ))

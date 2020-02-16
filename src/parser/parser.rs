@@ -147,6 +147,7 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
             _ => panic!("Invalid token found in an expression on line {}, column {}"),
         }
     }
+    
 }
 
 fn parse_if(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {

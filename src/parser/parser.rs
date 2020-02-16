@@ -182,6 +182,11 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
                         function_call.append(item, arena)
                     }
                 }
+                Token::Operator(o) => {
+                    let operator_node = arena.new_node(Node::new(Item::Operator(o.clone()), item.loc));
+                    operator_node.append(stack.pop().unwrap(), arena);
+                    operator_node.append(stack.pop().unwrap(), arena);
+                }
                 _ => {}
             }
         }

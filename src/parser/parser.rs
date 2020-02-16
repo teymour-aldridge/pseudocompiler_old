@@ -83,7 +83,9 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
                     }
                 }
             }
-            Token::Identifier(_) | Token::Literal(LiteralValue::Number(_)) => {}
+            Token::Identifier(_) | Token::Literal(LiteralValue::Number(_)) => {
+                operand_stack.push(next);
+            }
             Token::OpenBracket => {}
             Token::CloseBracket => {}
             _ => panic!(

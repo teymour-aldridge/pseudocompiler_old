@@ -4,7 +4,15 @@ mod lexer_tests {
     use std::any::Any;
 
     #[test]
-    fn number() {}
+    fn number() {
+        let output = lexer(&String::from("1.03e8"));
+        let first_token = &output.get(0).unwrap().token;
+        assert!(first_token==&Token::Literal(LiteralValue::Number(Number {
+            base: String::from("1"),
+            decimal: Some(String::from("03")),
+            exponent: Some(String::from("8"))
+        })))
+    }
 
     #[test]
     fn assignment() {}

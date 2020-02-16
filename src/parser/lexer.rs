@@ -95,6 +95,7 @@ pub enum Token {
     Keyword(Keyword),
     Separator(String),
     Operator(Operator),
+    FunctionCall(String),
     Literal(LiteralValue),
     Comment(String),
     OpenBracket,

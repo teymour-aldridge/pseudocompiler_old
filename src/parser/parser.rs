@@ -95,8 +95,8 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
             Token::Keyword(Keyword::Function) => {
                 let identifier = tokens.pop().unwrap();
                 match identifier.token {
-                    Token::Identifier(_) => {
-                        operator_stack.push(identifier);
+                    Token::Identifier(name) => {
+                        operator_stack.push(TokenValue::new(Token::FunctionCall(name), identifier.loc.line_num, identifier.loc.column_num));
                     }
                     _ => {
                         panic!("Expected an identifier after the 'function' keyword on line {}, column {}.", identifier.loc.line_num, identifier.loc.column_num)
@@ -147,6 +147,7 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
             _ => panic!("Invalid token found in an expression on line {}, column {}"),
         }
     }
+    for element in output_stack {}
 }
 
 fn parse_if(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {

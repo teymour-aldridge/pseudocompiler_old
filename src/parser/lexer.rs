@@ -352,37 +352,19 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                 get_next(&mut input_stack);
             }
             '/' => {
-                let mut stream = input_stack.chars();
-                let mut next = stream.next().unwrap();
+                get_next(&mut input_stack);
+                let next = input_stack.chars().next().unwrap();
                 match next {
-                    '/' => {
-                        get_next(&mut input_stack);
-                        get_next(&mut input_stack);
-                        loc.column_num += 2;
-                        output_stack.push(TokenValue::new(
-                            Token::Operator(Operator::IntegerDivide),
-                            loc.line_num,
-                            loc.column_num,
-                        ))
-                    }
-                    ' ' => {
-                        get_next(&mut input_stack);
-                        loc.column_num += 1;
-                        output_stack.push(TokenValue::new(
-                            Token::Operator(Operator::Divide),
-                            loc.line_num,
-                            loc.column_num,
-                        ))
-                    }
-                    '0'..='9' => output_stack.push(TokenValue::new(
+                    '/' => output_stack.push(TokenValue::new(
+                        Token::Operator(Operator::IntegerDivide),
+                        loc.line_num,
+                        loc.column_num,
+                    )),
+                    _ => output_stack.push(TokenValue::new(
                         Token::Operator(Operator::Divide),
                         loc.line_num,
                         loc.column_num,
                     )),
-                    _ => panic!(
-                        "Unexpected token {} on line {}, column {}.",
-                        top, loc.column_num, loc.line_num
-                    ),
                 }
             }
             '+' => {

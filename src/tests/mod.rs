@@ -42,8 +42,7 @@ mod lexer_tests {
         let mut output = lexer(&String::from("x/y"));
         assert!(output.get(0).unwrap().token == Token::Identifier(String::from("x")));
         assert!(output.get(1).unwrap().token == Token::Operator(Operator::Divide));
-        assert!(output.get(0).unwrap().token == Token::Identifier(String::from("y")));
-
+        assert!(output.get(2).unwrap().token == Token::Identifier(String::from("y")));
     }
 
     #[test]

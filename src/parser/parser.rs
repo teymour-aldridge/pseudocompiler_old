@@ -40,6 +40,29 @@ pub fn priority(o: &TokenValue) -> u32 {
     }
 }
 
+pub fn left_associative(o: &TokenValue) -> bool {
+    match &o.token {
+        Token::Operator(o) => {
+            match o {
+                Operator::Times => true,
+                Operator::Divide => true,
+                Operator::IntegerDivide => true,
+                Operator::Plus => true,
+                Operator::Minus => true,
+                Operator::Equals => true,
+                Operator::Modulo => true,
+                Operator::And => true,
+                Operator::Or => true,
+                Operator::Not => false,
+                // This is kept here in case more operators are to be added
+                _ => 0,
+            }
+        }
+        _ => panic!("Not an operator."),
+    }
+}
+
+
 pub struct Node {
     loc: Loc,
     item: Item,
@@ -66,34 +89,7 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
     let mut operand_stack: Vec<TokenValue> = Vec::new();
     let mut output_stack: Vec<TokenValue> = Vec::new();
     let mut finished = false;
-    while !finished {
-        let next = tokens.pop().unwrap();
-        match next.token {
-            Token::Operator(_) => {
-                if priority(operator_stack.get(0).unwrap()) > priority(&next) {
-                    operator_stack.push(next.clone())
-                } else {
-                    let mut parsed = false;
-                    while !parsed {
-                        for item in operator_stack.clone() {
-                            if priority(&item) < priority(&next) {
-                                output_stack.push(operator_stack.pop().unwrap());
-                            }
-                        }
-                    }
-                }
-            }
-            Token::Identifier(_) | Token::Literal(LiteralValue::Number(_)) => {
-                operand_stack.push(next);
-            }
-            Token::OpenBracket => {}
-            Token::CloseBracket => {}
-            _ => panic!(
-                "Invalid token in the expression on line {}, column {}.",
-                next.loc.line_num, next.loc.column_num
-            ),
-        }
-    }
+    while !finished {}
 }
 
 fn parse_if(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {

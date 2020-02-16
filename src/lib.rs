@@ -1,5 +1,14 @@
 #![feature(exclusive_range_pattern)]
 
+extern crate wasm_bindgen;
+
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+extern {
+    pub fn alert(s: &str);
+}
+
 mod parser;
 mod tests;
 mod transpiler;

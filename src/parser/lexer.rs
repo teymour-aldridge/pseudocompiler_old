@@ -355,11 +355,14 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                 get_next(&mut input_stack);
                 let next = input_stack.chars().next().unwrap();
                 match next {
-                    '/' => output_stack.push(TokenValue::new(
-                        Token::Operator(Operator::IntegerDivide),
-                        loc.line_num,
-                        loc.column_num,
-                    )),
+                    '/' => {
+                        get_next(&mut input_stack);
+                        output_stack.push(TokenValue::new(
+                            Token::Operator(Operator::IntegerDivide),
+                            loc.line_num,
+                            loc.column_num,
+                        ))
+                    }
                     _ => output_stack.push(TokenValue::new(
                         Token::Operator(Operator::Divide),
                         loc.line_num,

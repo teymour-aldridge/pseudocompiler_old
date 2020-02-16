@@ -46,7 +46,13 @@ mod lexer_tests {
     }
 
     #[test]
-    fn integer_divide() {}
+    fn integer_divide() {
+        let mut output = lexer(&String::from("x//y"));
+        println!("{:?}", output);
+        assert!(output.get(0).unwrap().token == Token::Identifier(String::from("x")));
+        assert!(output.get(1).unwrap().token == Token::Operator(Operator::IntegerDivide));
+        assert!(output.get(2).unwrap().token == Token::Identifier(String::from("y")));
+    }
 
     #[test]
     fn add() {}

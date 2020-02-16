@@ -246,6 +246,16 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                                 loc.line_num,
                                 loc.column_num,
                             )),
+                            "to" => output_stack.push(TokenValue::new(
+                                Token::Keyword(Keyword::Do),
+                                loc.line_num,
+                                loc.column_num,
+                            )),
+                            "do" => output_stack.push(TokenValue::new(
+                                Token::Keyword(Keyword::Do),
+                                loc.line_num,
+                                loc.column_num,
+                            )),
                             _ => output_stack.push(TokenValue::new(
                                 Token::Identifier(String::from(&identifier)),
                                 loc.line_num,

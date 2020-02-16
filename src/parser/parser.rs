@@ -61,6 +61,13 @@ pub fn left_associative(o: &TokenValue) -> bool {
     }
 }
 
+pub fn is_operator(o: &TokenValue) -> bool {
+    match o.token {
+        Token::FunctionCall(_) | Token::Operator(_) => true,
+        _ => false,
+    }
+}
+
 pub struct Node {
     loc: Loc,
     item: Item,
@@ -147,7 +154,22 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
             _ => panic!("Invalid token found in an expression on line {}, column {}"),
         }
     }
-    for element in output_stack {}
+    let mut stack: Vec<NodeId> = Vec::new();
+    for (i, item) in output_stack.iter().enumerate() {
+        if !(is_operator(&item)) {
+            stack.push(arena.new_node(Node::new(
+                match &item.token {
+                    Token::Identifier(s) => Item::Identifier(s.to_string()),
+                    Token::Literal(LiteralValue::Number(n)) => Item::Number(n.clone()),
+                    _ => panic!(
+                        "Invalid token on line {}, column {}",
+                        item.loc.line_num, item.loc.column_num
+                    ),
+                },
+                item.loc,
+            )))
+        }
+    }
 }
 
 fn parse_if(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {

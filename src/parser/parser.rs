@@ -155,7 +155,8 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
         }
     }
     let mut stack: Vec<NodeId> = Vec::new();
-    for (i, item) in output_stack.iter().enumerate() {
+    let mut removed_items = 0;
+    for (i, item) in output_stack.clone().iter().enumerate() {
         if !(is_operator(&item)) {
             stack.push(arena.new_node(Node::new(
                 match &item.token {
@@ -168,6 +169,21 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
                 },
                 item.loc,
             )))
+        } else {
+            match &item.token {
+                Token::FunctionCall(s) => {
+                    let to_pop = i - removed_items;
+                    let mut nodes: Vec<NodeId> = Vec::new();
+                    for i in 1..to_pop {
+                        nodes.push(stack.pop().unwrap())
+                    }
+                    let function_call = arena.new_node(Node::new(Item::Call(String::from(s)), item.loc));
+                    for item in nodes {
+                        function_call.append(item, arena)
+                    }
+                }
+                _ => {}
+            }
         }
     }
 }

@@ -72,22 +72,26 @@ impl Node {
     }
 }
 
-fn parse_boolean() {}
 
-fn parse_arithmetic() {}
-
-fn parse_assignment() {}
-
-/// E -> E "+" E | E "-" E | E "/" E | E "//" E | E "*" E | E "or" E | E "and" E | "not" E | N
-/// N
-/// This is an implementation of the Shunting-Yard algorithm (sort-of).
+/// Turns an infix string into a postfix string.
 fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
     let mut operator_stack: Vec<TokenValue> =
         vec![TokenValue::new(Token::Operator(Operator::Empty), 0, 0)];
-    let mut operand_stack: Vec<TokenValue> = Vec::new();
     let mut output_stack: Vec<TokenValue> = Vec::new();
     let mut finished = false;
-    while !finished {}
+    while !finished {
+        let next: TokenValue = tokens.pop().unwrap();
+        match next.token {
+            Token::Operator(o) => {}
+            Token::Literal(LiteralValue::Number(n)) => {}
+            Token::Keyword(Keyword::Function) => {}
+            Token::OpenBracket => {}
+            Token::CloseBracket => {}
+            _ => {
+                panic!("Invalid token found in an expression on line {}, column {}")
+            }
+        }
+    }
 }
 
 fn parse_if(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {

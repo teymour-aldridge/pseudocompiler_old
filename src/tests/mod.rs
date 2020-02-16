@@ -55,16 +55,44 @@ mod lexer_tests {
     }
 
     #[test]
-    fn add() {}
+    fn add() {
+        let mut output = lexer(&String::from("x+y"));
+        assert!(output.get(0).unwrap().token == Token::Identifier(String::from("x")));
+        assert!(output.get(1).unwrap().token == Token::Operator(Operator::Plus));
+        assert!(output.get(2).unwrap().token == Token::Identifier(String::from("y")));
+    }
 
     #[test]
-    fn multiply() {}
+    fn multiply() {
+        let mut output = lexer(&String::from("x*y"));
+        assert!(output.get(0).unwrap().token == Token::Identifier(String::from("x")));
+        assert!(output.get(1).unwrap().token == Token::Operator(Operator::Times));
+        assert!(output.get(2).unwrap().token == Token::Identifier(String::from("y")));
+    }
 
     #[test]
-    fn minus() {}
+    fn minus() {
+        let mut output = lexer(&String::from("x-y"));
+        assert!(output.get(0).unwrap().token == Token::Identifier(String::from("x")));
+        assert!(output.get(1).unwrap().token == Token::Operator(Operator::Minus));
+        assert!(output.get(2).unwrap().token == Token::Identifier(String::from("y")));
+    }
 
     #[test]
-    fn boolean() {}
+    fn and() {
+        let mut output = lexer(&String::from("x and y"));
+        assert!(output.get(0).unwrap().token == Token::Identifier(String::from("x")));
+        assert!(output.get(1).unwrap().token == Token::Operator(Operator::And));
+        assert!(output.get(2).unwrap().token == Token::Identifier(String::from("y")));
+    }
+
+    #[test]
+    fn or() {
+        let mut output = lexer(&String::from("x or y"));
+        assert!(output.get(0).unwrap().token == Token::Identifier(String::from("x")));
+        assert!(output.get(1).unwrap().token == Token::Operator(Operator::Or));
+        assert!(output.get(2).unwrap().token == Token::Identifier(String::from("y")));
+    }
 
     #[test]
     fn string() {}

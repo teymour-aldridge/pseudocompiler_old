@@ -123,8 +123,14 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
                     }
                 }
             }
-            Token::OpenBracket => {}
-            Token::CloseBracket => {}
+            Token::OpenBracket => {
+                operator_stack.push(token);
+            }
+            Token::CloseBracket => {
+                while operator_stack.get(0).unwrap().token != Token::OpenBracket {
+                    output_stack.push(operator_stack.pop().unwrap());
+                }
+            }
             _ => panic!("Invalid token found in an expression on line {}, column {}"),
         }
     }

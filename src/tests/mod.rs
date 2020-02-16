@@ -7,15 +7,35 @@ mod lexer_tests {
     fn number() {
         let output = lexer(&String::from("1.03e8"));
         let first_token = &output.get(0).unwrap().token;
-        assert!(first_token==&Token::Literal(LiteralValue::Number(Number {
-            base: String::from("1"),
-            decimal: Some(String::from("03")),
-            exponent: Some(String::from("8"))
-        })))
+        assert!(
+            first_token
+                == &Token::Literal(LiteralValue::Number(Number {
+                    base: String::from("1"),
+                    decimal: Some(String::from("03")),
+                    exponent: Some(String::from("8")),
+                }))
+        )
     }
 
     #[test]
-    fn assignment() {}
+    fn assignment() {
+        let mut output = lexer(&String::from("x=1"));
+        let identifier = output.get(0).unwrap();
+        let equals = output.get(1).unwrap();
+        let value = output.get(2).unwrap();
+        let eos = output.get(4).unwrap();
+        assert!(identifier.token == Token::Identifier(String::from("x")));
+        assert!(equals.token == Token::Operator(Operator::Equals));
+        assert!(
+            value.token
+                == Token::Literal(LiteralValue::Number(Number {
+                    base: String::from("1"),
+                    decimal: None,
+                    exponent: None,
+                }))
+        );
+        assert!(eos.token == Token::EndOfSequence);
+    }
 
     #[test]
     fn divide() {}

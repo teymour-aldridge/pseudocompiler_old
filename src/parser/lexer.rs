@@ -221,6 +221,11 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                                 loc.line_num,
                                 loc.column_num,
                             )),
+                            "return" => output_stack.push(TokenValue::new(
+                                Token::Keyword(Keyword::EndIf),
+                                loc.line_num,
+                                loc.column_num,
+                            )),
                             "while" => output_stack.push(TokenValue::new(
                                 Token::Keyword(Keyword::While),
                                 loc.line_num,
@@ -231,8 +236,13 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                                 loc.line_num,
                                 loc.column_num,
                             )),
-                            "return" => output_stack.push(TokenValue::new(
-                                Token::Keyword(Keyword::EndIf),
+                            "for" => output_stack.push(TokenValue::new(
+                                Token::Keyword(Keyword::For),
+                                loc.line_num,
+                                loc.column_num,
+                            )),
+                            "endfor" => output_stack.push(TokenValue::new(
+                                Token::Keyword(Keyword::EndFor),
                                 loc.line_num,
                                 loc.column_num,
                             )),

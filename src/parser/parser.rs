@@ -84,10 +84,11 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
             Token::Operator(o) => {
                 if priority(&next) > priority(operator_stack.get(0).unwrap()) {
                     operator_stack.push(next)
-                } else if priority(&next) == priority(operator_stack.get(0).unwrap()) {
-                    output_stack.push(operator_stack.pop().unwrap());
-                    operator_stack.push(next)
                 } else {
+                    while priority(&next) <= priority(operator_stack.get(0).unwrap()) {
+                        output_stack.push(operator_stack.pop().unwrap());
+                    }
+                    operator_stack.push(next);
                 }
             }
             Token::Literal(LiteralValue::Number(n)) => {}

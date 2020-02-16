@@ -23,7 +23,7 @@ mod lexer_tests {
         let identifier = output.get(0).unwrap();
         let equals = output.get(1).unwrap();
         let value = output.get(2).unwrap();
-        let eos = output.get(4).unwrap();
+        let eos = output.get(3).unwrap();
         assert!(identifier.token == Token::Identifier(String::from("x")));
         assert!(equals.token == Token::Operator(Operator::Equals));
         assert!(

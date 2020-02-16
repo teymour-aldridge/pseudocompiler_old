@@ -84,7 +84,17 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
         match next.token {
             Token::Operator(o) => {}
             Token::Literal(LiteralValue::Number(n)) => {}
-            Token::Keyword(Keyword::Function) => {}
+            Token::Keyword(Keyword::Function) => {
+                let identifier = tokens.pop().unwrap();
+                match &identifier.token {
+                    Token::Identifier(s) => {
+                        output_stack.push(identifier)
+                    }
+                    _ => {
+                        panic!("Expected an identifier after the 'function' keyword on line {}, column {}.", next.loc.line_num, next.loc.column_num)
+                    }
+                }
+            }
             Token::OpenBracket => {}
             Token::CloseBracket => {}
             _ => {

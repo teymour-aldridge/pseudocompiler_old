@@ -55,7 +55,7 @@ pub fn left_associative(o: &TokenValue) -> bool {
                 Operator::Or => true,
                 Operator::Not => false,
                 // This is kept here in case more operators are to be added
-                _ => 0,
+                _ => true,
             }
         }
         _ => panic!("Not an operator."),

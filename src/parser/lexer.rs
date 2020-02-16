@@ -84,6 +84,7 @@ pub enum Operator {
     Not,
     Equals,
     In,
+    NotEquals,
     // Not used as part of the lexer (only in the parser)
     Empty,
 }
@@ -450,6 +451,29 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
             }
             '=' => {
                 get_next(&mut input_stack);
+                loc.column_num += 1;
+                output_stack.push(TokenValue::new(
+                    Token::Operator(Operator::Equals),
+                    loc.line_num,
+                    loc.column_num,
+                ))
+            }
+            '!' => {
+                get_next(&mut input_stack);
+                let next = get_next(&mut input_stack);
+                match next {
+                    '=' => {
+                        loc.column_num += 1;
+                        output_stack.push(TokenValue::new(
+                            Token::Operator(Operator::Equals),
+                            loc.line_num,
+                            loc.column_num,
+                        ))
+                    }
+                    _ => {
+                        panic!("Expected an equals following a '!' on line {}, column {}.", loc.line_num, loc.column_num);
+                    }
+                }
                 loc.column_num += 1;
                 output_stack.push(TokenValue::new(
                     Token::Operator(Operator::Equals),

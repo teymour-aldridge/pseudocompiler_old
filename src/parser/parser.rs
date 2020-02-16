@@ -147,7 +147,6 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
             _ => panic!("Invalid token found in an expression on line {}, column {}"),
         }
     }
-    
 }
 
 fn parse_if(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
@@ -274,7 +273,7 @@ fn parse_function(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<Tok
 fn parse_function_call(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {}
 
 fn parse_statement(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
-    let mut lexitem = tokens.pop().unwrap();
+    let lexitem = tokens.pop().unwrap();
     match lexitem.token {
         Token::Keyword(Keyword::If) => {
             let new_node = arena.new_node(Node::new(Item::If, lexitem.loc));

@@ -22,13 +22,11 @@ pub fn priority(o: &TokenValue) -> u32 {
     match &o.token {
         Token::Operator(o) => {
             match o {
-                Operator::Times => 5,
-                Operator::Divide => 5,
-                Operator::IntegerDivide => 5,
-                Operator::Plus => 4,
-                Operator::Minus => 4,
-                Operator::Equals => 3,
-                Operator::Modulo => 5,
+                Operator::Times | Operator::Divide | Operator::IntegerDivide | Operator::Modulo => {
+                    5
+                }
+                Operator::Plus | Operator::Minus => 4,
+                Operator::Equals | Operator::NotEquals => 3,
                 Operator::And => 2,
                 Operator::Or => 1,
                 Operator::Not => 5,
@@ -50,6 +48,7 @@ pub fn left_associative(o: &TokenValue) -> bool {
                 Operator::Plus => true,
                 Operator::Minus => true,
                 Operator::Equals => true,
+                Operator::NotEquals => true,
                 Operator::Modulo => true,
                 Operator::And => true,
                 Operator::Or => true,
@@ -61,7 +60,6 @@ pub fn left_associative(o: &TokenValue) -> bool {
         _ => panic!("Not an operator."),
     }
 }
-
 
 pub struct Node {
     loc: Loc,

@@ -471,7 +471,10 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                         ))
                     }
                     _ => {
-                        panic!("Expected an equals following a '!' on line {}, column {}.", loc.line_num, loc.column_num);
+                        panic!(
+                            "Expected an equals following a '!' on line {}, column {}.",
+                            loc.line_num, loc.column_num
+                        );
                     }
                 }
                 loc.column_num += 1;

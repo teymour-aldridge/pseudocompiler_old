@@ -72,7 +72,6 @@ impl Node {
     }
 }
 
-
 /// Turns an infix string into a postfix string.
 fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
     let mut operator_stack: Vec<TokenValue> =
@@ -86,20 +85,44 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
             Token::Literal(LiteralValue::Number(n)) => {}
             Token::Keyword(Keyword::Function) => {
                 let identifier = tokens.pop().unwrap();
-                match &identifier.token {
-                    Token::Identifier(s) => {
-                        output_stack.push(identifier)
+                match identifier.token {
+                    Token::Identifier(_) => {
+                        operator_stack.push(identifier);
                     }
                     _ => {
-                        panic!("Expected an identifier after the 'function' keyword on line {}, column {}.", next.loc.line_num, next.loc.column_num)
+                        panic!("Expected an identifier after the 'function' keyword on line {}, column {}.", identifier.loc.line_num, identifier.loc.column_num)
+                    }
+                }
+                let open_bracket = tokens.pop().unwrap();
+                match open_bracket.token {
+                    Token::OpenBracket => {}
+                    _ => {
+                        panic!("Expected an opening bracket after the 'function' keyword on line {}, column {}.", open_bracket.loc.line_num, open_bracket.loc.column_num)
+                    }
+                }
+                let mut all_arguments = false;
+                while !all_arguments {
+                    let argument = tokens.pop().unwrap();
+                    match &argument.token {
+                        Token::Identifier(_) | Token::Literal(LiteralValue::Number(_)) => {
+                            output_stack.push(argument)
+                        }
+                        Token::Comma => {}
+                        Token::EndOfSequence => {
+                            panic!("Expected a closing bracket after the function call on line {}, column {}.", next.loc.line_num, next.loc.column_num)
+                        }
+                        Token::CloseBracket => {
+                            all_arguments = true;
+                        }
+                        _ => {
+                            panic!("Unexpected token after the 'function' keyword on line {}, column {}.", argument.loc.line_num, argument.loc.column_num)
+                        }
                     }
                 }
             }
             Token::OpenBracket => {}
             Token::CloseBracket => {}
-            _ => {
-                panic!("Invalid token found in an expression on line {}, column {}")
-            }
+            _ => panic!("Invalid token found in an expression on line {}, column {}"),
         }
     }
 }

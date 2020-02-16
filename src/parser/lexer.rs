@@ -392,6 +392,15 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                     loc.column_num,
                 ))
             }
+            '%' => {
+                get_next(&mut input_stack);
+                loc.column_num += 1;
+                output_stack.push(TokenValue::new(
+                    Token::Operator(Operator::Modulo),
+                    loc.line_num,
+                    loc.column_num,
+                ))
+            }
             '-' => {
                 get_next(&mut input_stack);
                 loc.column_num += 1;

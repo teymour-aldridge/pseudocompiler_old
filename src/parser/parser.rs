@@ -95,7 +95,9 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
                 }
                 let open_bracket = tokens.pop().unwrap();
                 match open_bracket.token {
-                    Token::OpenBracket => {}
+                    Token::OpenBracket => {
+                        operator_stack.push(open_bracket);
+                    }
                     _ => {
                         panic!("Expected an opening bracket after the 'function' keyword on line {}, column {}.", open_bracket.loc.line_num, open_bracket.loc.column_num)
                     }
@@ -105,13 +107,14 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
                     let argument = tokens.pop().unwrap();
                     match &argument.token {
                         Token::Identifier(_) | Token::Literal(LiteralValue::Number(_)) => {
-                            output_stack.push(argument)
+                            output_stack.push(argument);
                         }
                         Token::Comma => {}
                         Token::EndOfSequence => {
                             panic!("Expected a closing bracket after the function call on line {}, column {}.", next.loc.line_num, next.loc.column_num)
                         }
                         Token::CloseBracket => {
+                            output_stack.push(argument);
                             all_arguments = true;
                         }
                         _ => {

@@ -80,8 +80,15 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
     let mut finished = false;
     while !finished {
         let next: TokenValue = tokens.pop().unwrap();
-        match next.token {
-            Token::Operator(o) => {}
+        match &next.token {
+            Token::Operator(o) => {
+                if priority(&next) > priority(operator_stack.get(0).unwrap()) {
+                    operator_stack.push(next)
+                } else if priority(&next) == priority(operator_stack.get(0).unwrap()) {
+                    output_stack.push(operator_stack.pop().unwrap());
+                    operator_stack.push(next)
+                } else {}
+            }
             Token::Literal(LiteralValue::Number(n)) => {}
             Token::Keyword(Keyword::Function) => {
                 let identifier = tokens.pop().unwrap();
@@ -124,12 +131,13 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
                 }
             }
             Token::OpenBracket => {
-                operator_stack.push(token);
+                operator_stack.push(next);
             }
             Token::CloseBracket => {
                 while operator_stack.get(0).unwrap().token != Token::OpenBracket {
                     output_stack.push(operator_stack.pop().unwrap());
                 }
+                operator_stack.pop().unwrap();
             }
             _ => panic!("Invalid token found in an expression on line {}, column {}"),
         }

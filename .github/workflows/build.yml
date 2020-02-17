@@ -1,7 +1,12 @@
 name: Build
-on: [push]
+on:
+  push:
+    paths:
+      - "src/**"
+      - "app/**"
+      - "Cargo.toml"
 jobs:
-  test:
+  build:
     runs-on: macos-latest
 
     steps:
@@ -20,12 +25,12 @@ jobs:
       - name: Build compiler
         run: wasm-pack build
       - name: Install dependencies
-        run: npm install
+        run: cd app && npm install && cd ../
       - name: Build
-        run: npm build
+        run: cd app && npm run-script build && cd ../
       - name: Deploy to Github pages
         uses: peaceiris/actions-gh-pages@v2.5.0
         env:
           ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: ./public
+          PUBLISH_DIR: ./app/dist

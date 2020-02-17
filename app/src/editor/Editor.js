@@ -47,7 +47,7 @@ class Editor extends React.Component {
             <div className="ControlPanel">
                 <button onClick={event => {
                     event.preventDefault();
-                    eval(wasm.compile(""));
+                    eval(wasm.compile(this.state.code));
                 }
                 }>RUN CODE
                 </button>

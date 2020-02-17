@@ -12,7 +12,7 @@ jobs:
       - name: Setup Rust
         uses: hecrj/setup-rust-action@v1
         with:
-          rust-version: ${{ matrix.rust }}
+          rust-version: nightly
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:

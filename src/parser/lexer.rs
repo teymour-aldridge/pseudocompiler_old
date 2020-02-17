@@ -107,6 +107,7 @@ pub enum Token {
     Dot,
     EndOfSequence,
     NewLine,
+    Tab
 }
 
 #[derive(Debug, PartialEq, Clone)]

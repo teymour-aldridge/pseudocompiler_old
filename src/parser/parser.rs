@@ -335,7 +335,20 @@ fn parse_function(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<Tok
 
 fn parse_function_call(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {}
 
-fn parse_block(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {}
+fn parse_block(indentation: i32, parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
+    let mut finished = false;
+    while !finished {
+        for i in 1..indentation {
+            let next = tokens.pop().unwrap();
+            match next.token {
+                Token::Tab => {}
+                _ => {
+                    panic!("Expected an indented block on line {}, column {}.", next.loc.line_num, next.loc.column_num)
+                }
+            }
+        }
+    }
+}
 
 fn parse_statement(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
     let lexitem = tokens.pop().unwrap();

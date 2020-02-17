@@ -343,7 +343,20 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
     }
 }
 
-fn parse_function(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {}
+fn parse_function(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
+    let function_node = arena.new_node(Node::new(Item::Function, tokens.iter().next().unwrap().loc));
+    parent.append(function_node, arena);
+    let identifier_token = tokens.pop().unwrap();
+    match identifier_token.token {
+        Token::Identifier(s) => {
+            let identifier_node = arena.new_node(Node::new(Item::Identifier(s), identifier_token.loc));
+            function_node.append(identifier_node, arena);
+        }
+        _ => {
+            panic!("Expected an identifier after the 'function' keyword on line {}, column {}.", identifier_token.loc.line_num, identifier_token.loc.column_num);
+        }
+    }
+}
 
 fn parse_function_call(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {}
 

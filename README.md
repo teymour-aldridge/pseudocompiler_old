@@ -1,6 +1,16 @@
 # Pseudocompiler
 A compiler for pseudocode, inspired by the [OCR specification](https://www.ocr.org.uk/Images/202654-pseudocode-guide.pdf) [[backup link](https://web.archive.org/web/20200118155656/https://www.ocr.org.uk/Images/202654-pseudocode-guide.pdf)].
 
+# Getting started
+At present, you will have to either use the web frontend or build the compiler from source. Please note that the compiler is way off of being finished so it doesn't do much (or anything) at the moment.
+
+# Contributing
+If you'd like to contribute there are a few things which would be useful:
+* Adding more tests to the compiler (in the `src` directory, under the `tests` subdirectory).
+* Building the frontend (in React). This is still being worked upon.
+
+Please note that we adopt the Contributor Covenant Code of Conduct. 
+
 # Code structure
 This repository serves as a monorepo. It is laid out something like this:
 ```
@@ -13,9 +23,5 @@ The `src` directory contains the code for the actual compiler, written in Rust.
 # Language specification
 This still hasn't completely been worked out. 
 
-# Contributing
-If you'd like to contribute there are a few things which would be useful:
-* Adding more tests to the compiler (in the `src` directory, under the `tests` subdirectory).
-* Building the frontend (in React). This is still being worked upon.
-
-Please note that we adopt the Contributor Covenant Code of Conduct. 
+# CI
+We use Github actions for continuous integration (deploying the frontend to Github Pages) and testing. The Github actions we use are configured in `.github/workflows`. 

@@ -343,10 +343,11 @@ fn parse_block(indentation: i32, parent: &NodeId, arena: &mut Arena<Node>, token
             match next.token {
                 Token::Tab => {}
                 _ => {
-                    panic!("Expected an indented block on line {}, column {}.", next.loc.line_num, next.loc.column_num)
+                    finished = true
                 }
             }
         }
+        parse_statement(parent, arena, tokens)
     }
 }
 

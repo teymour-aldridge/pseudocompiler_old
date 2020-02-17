@@ -6,7 +6,7 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 extern "C" {
-    pub fn alert(s: &str);
+	pub fn alert(s: &str);
 }
 
 mod parser;
@@ -17,5 +17,5 @@ mod transpiler;
 /// using `eval`.
 #[wasm_bindgen]
 pub fn compile(input: String) -> String {
-    String::from("alert(\"Not implemented!\")")
+	String::from("alert(\"Not implemented!\")")
 }

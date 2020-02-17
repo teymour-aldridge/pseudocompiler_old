@@ -298,6 +298,9 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
                 Token::Keyword(Keyword::To) => {
                     e_1 = true;
                 }
+                Token::NewLine | Token::EndOfSequence => {
+                    panic!("Expected the 'to' keyword following 'for <variable>=<expression>' on line {}, column {}.", next_token.loc.line_num, next_token.loc.column_num)
+                }
                 _ => expression_block_1.push(next_token),
             }
         }
@@ -309,6 +312,9 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
             match next_token.token {
                 Token::Keyword(Keyword::Do) => {
                     e_2 = true;
+                }
+                Token::NewLine | Token::EndOfSequence => {
+                    panic!("Expected the 'do' keyword following 'for <variable>=<expression> to <expression>' on line {}, column {}.", next_token.loc.line_num, next_token.loc.column_num)
                 }
                 _ => expression_block_2.push(next_token),
             }

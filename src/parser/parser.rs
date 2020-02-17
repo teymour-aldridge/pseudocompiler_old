@@ -304,7 +304,6 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
                 _ => expression_block_1.push(next_token),
             }
         }
-        parse_expression(&for_node, arena, &mut expression_block_1);
         let mut e_2 = false;
         let mut expression_block_2: Vec<TokenValue> = Vec::new();
         while !e_2 {
@@ -319,22 +318,28 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
                 _ => expression_block_2.push(next_token),
             }
         }
+        parse_expression(&for_node, arena, &mut expression_block_1);
         parse_expression(&for_node, arena, &mut expression_block_2);
+        parse_block(1, &for_node, arena, tokens)
     } else {
-        let identifier_token = tokens.pop().unwrap();
-        let mut in_identifier = String::new();
-        match identifier_token.token {
-            Token::Identifier(s) => in_identifier = s,
-            _ => {}
+        let mut expression: Vec<TokenValue> = Vec::new();
+        let mut found_do = false;
+        while !found_do {
+            let next_token = tokens.pop().unwrap();
+            match next_token.token {
+                Token::Keyword(Keyword::Do) => {
+                    found_do = true;
+                }
+                Token::EndOfSequence | Token::NewLine => {
+                    panic!("Expected the 'to' keyword following 'for <variable>=<expression>' on line {}, column {}.", next_token.loc.line_num, next_token.loc.column_num)
+                }
+                _ => {
+                    expression.push(next_token);
+                }
+            }
         }
-        let in_token = tokens.pop().unwrap();
-        match in_token.token {
-            Token::Operator(Operator::In) => {}
-            _ => panic!(
-                "Expected an 'in' after the variable in the for loop on line {}, column {}",
-                equals_sign.loc.line_num, equals_sign.loc.column_num
-            ),
-        }
+        parse_expression(&for_node, arena, &mut expression);
+        parse_block(1, &for_node, arena, tokens)
     }
 }
 

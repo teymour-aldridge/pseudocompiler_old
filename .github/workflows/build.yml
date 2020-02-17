@@ -29,6 +29,7 @@ jobs:
           name: rust-binary
           path: pkg
   build-javascript:
+    needs: build-rust
     runs-on: ubuntu-latest
     steps:
       - name: Download Rust binary

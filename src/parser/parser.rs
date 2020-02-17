@@ -196,12 +196,29 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
 }
 
 fn parse_if(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
-    let expression = arena.new_node(Node::new(
-        Item::Expression,
-        tokens.iter().next().unwrap().loc,
-    ));
-    parent.append(expression, arena);
-    parse_expression(&expression, arena, tokens);
+    let mut then_token = false;
+    let mut expression: Vec<TokenValue> = Vec::new();
+    let start_loc = tokens.iter().next().unwrap().clone();
+    while !then_token {
+        let next = tokens.pop().unwrap();
+        match next.token {
+            Token::Keyword(Keyword::Then) => {
+                then_token = true;
+                let new_line = tokens.pop().unwrap();
+                match new_line.token {
+                    Token::NewLine => {}
+                    _ => {
+                        panic!("Expected a new line following the 'then' keyword on line {}, column {}", new_line.loc.line_num, new_line.loc.column_num);
+                    }
+                }
+            }
+            _ => {
+                expression.push(next);
+            }
+        }
+    }
+    let expression_node = arena.new_node(Node::new(Item::Expression, start_loc.loc));
+    parse_expression(&expression_node, arena, &mut expression);
 }
 
 fn parse_while(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {

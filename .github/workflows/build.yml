@@ -6,7 +6,7 @@ on:
       - "app/**"
       - "Cargo.toml"
 jobs:
-  build:
+  build-rust:
     runs-on: ubuntu-latest
     steps:
       - name: Setup Rust
@@ -23,13 +23,23 @@ jobs:
         run: cargo install wasm-pack
       - name: Build compiler
         run: wasm-pack build
-      - name: Install dependencies
-        run: cd app && npm install && cd ../
-      - name: Build
-        run: cd app && npm run-script build && cd ../
-      - name: Deploy to Github pages
-        uses: peaceiris/actions-gh-pages@v2.5.0
-        env:
-          ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          PUBLISH_BRANCH: gh-pages
-          PUBLISH_DIR: ./app/build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: rust-binary
+          path: pkg
+  build-javascript:
+    - name: Download Rust binary
+      uses: actions/download-artifact@v1
+      with:
+        - name: rust-binary
+    - name: Install dependencies
+      run: cd app && npm install && cd ../
+    - name: Build
+      run: cd app && npm run-script build && cd ../
+    - name: Deploy to Github pages
+      uses: peaceiris/actions-gh-pages@v2.5.0
+      env:
+        ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        PUBLISH_BRANCH: gh-pages
+        PUBLISH_DIR: ./app/build

@@ -262,7 +262,6 @@ fn parse_while(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenV
 fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
     let n = arena.new_node(Node::new(Item::For, arena.get(*parent).unwrap().get().loc));
     parent.append(n, arena);
-
     let mut count_variable = String::new();
     let identifier = tokens.pop().unwrap();
     match identifier.token {
@@ -284,7 +283,7 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
             is_count = false;
         }
         _ => panic!(
-            "Expected an equals sign after the variable {} in the for loop on line {}, column {}",
+            "Expected an equals sign or the 'in' keyword after the variable {} in the for loop on line {}, column {}",
             count_variable, equals_sign.loc.line_num, equals_sign.loc.column_num
         ),
     }
@@ -386,6 +385,7 @@ fn parse_statement(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<To
                     new_node.append(assign_expression, arena);
                     parse_expression(&assign_expression, arena, tokens)
                 }
+                Token::NewLine => {}
                 _ => {
                     panic!(
                         "Invalid token on line {}, column {}.",

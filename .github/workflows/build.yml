@@ -36,6 +36,7 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: rust-binary
+          path: pkg
       - name: Checkout repository
         uses: actions/checkout@master
       - name: Install dependencies

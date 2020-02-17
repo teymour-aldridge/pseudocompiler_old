@@ -34,7 +34,7 @@ jobs:
       - name: Download Rust binary
         uses: actions/download-artifact@v1
         with:
-          - name: rust-binary
+          name: rust-binary
       - name: Install dependencies
         run: cd app && npm install && cd ../
       - name: Build

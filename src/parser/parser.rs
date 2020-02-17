@@ -260,8 +260,9 @@ fn parse_while(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenV
 }
 
 fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
-    let n = arena.new_node(Node::new(Item::For, arena.get(*parent).unwrap().get().loc));
-    parent.append(n, arena);
+    let for_node = arena.new_node(Node::new(Item::For, arena.get(*parent).unwrap().get().loc));
+    parent.append(for_node, arena);
+
     let mut count_variable = String::new();
     let identifier = tokens.pop().unwrap();
     match identifier.token {
@@ -273,6 +274,7 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
             identifier.loc.line_num, identifier.loc.column_num
         ),
     }
+
     let equals_sign = tokens.pop().unwrap();
     let mut is_count = false;
     match equals_sign.token {
@@ -299,7 +301,7 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
                 _ => expression_block_1.push(next_token),
             }
         }
-        parse_expression(&n, arena, &mut expression_block_1);
+        parse_expression(&for_node, arena, &mut expression_block_1);
         let mut e_2 = false;
         let mut expression_block_2: Vec<TokenValue> = Vec::new();
         while !e_2 {
@@ -311,7 +313,7 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
                 _ => expression_block_2.push(next_token),
             }
         }
-        parse_expression(&n, arena, &mut expression_block_2);
+        parse_expression(&for_node, arena, &mut expression_block_2);
     } else {
         let identifier_token = tokens.pop().unwrap();
         let mut in_identifier = String::new();
@@ -334,16 +336,19 @@ fn parse_function(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<Tok
 
 fn parse_function_call(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {}
 
-fn parse_block(indentation: i32, parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
+fn parse_block(
+    indentation: i32,
+    parent: &NodeId,
+    arena: &mut Arena<Node>,
+    tokens: &mut Vec<TokenValue>,
+) {
     let mut finished = false;
     while !finished {
         for i in 1..indentation {
             let next = tokens.pop().unwrap();
             match next.token {
                 Token::Tab => {}
-                _ => {
-                    finished = true
-                }
+                _ => finished = true,
             }
         }
         parse_statement(parent, arena, tokens)

@@ -8,10 +8,10 @@ fn number() {
     assert!(
         first_token
             == &Token::Literal(LiteralValue::Number(Number {
-            base: String::from("1"),
-            decimal: Some(String::from("03")),
-            exponent: Some(String::from("8")),
-        }))
+                base: String::from("1"),
+                decimal: Some(String::from("03")),
+                exponent: Some(String::from("8")),
+            }))
     )
 }
 
@@ -27,10 +27,10 @@ fn assignment() {
     assert!(
         value.token
             == Token::Literal(LiteralValue::Number(Number {
-            base: String::from("1"),
-            decimal: None,
-            exponent: None,
-        }))
+                base: String::from("1"),
+                decimal: None,
+                exponent: None,
+            }))
     );
     assert!(eos.token == Token::EndOfSequence);
 }
@@ -109,4 +109,3 @@ fn while_loop() {}
 
 #[test]
 fn function() {}
-

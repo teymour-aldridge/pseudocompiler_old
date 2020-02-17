@@ -54,7 +54,7 @@ pub enum Keyword {
     Return,
     Do,
     To,
-    Then
+    Then,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq)]
@@ -84,6 +84,7 @@ pub enum Operator {
     Or,
     Not,
     Equals,
+    DoubleEquals,
     In,
     NotEquals,
     // Not used as part of the lexer (only in the parser)
@@ -107,7 +108,7 @@ pub enum Token {
     Dot,
     EndOfSequence,
     NewLine,
-    Tab
+    Tab,
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -439,12 +440,26 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
             }
             '=' => {
                 get_next(&mut input_stack);
-                loc.column_num += 1;
-                output_stack.push(TokenValue::new(
-                    Token::Operator(Operator::Equals),
-                    loc.line_num,
-                    loc.column_num,
-                ))
+                let double_equals = input_stack.chars().next().unwrap();
+                match double_equals {
+                    '=' => {
+                        get_next(&mut input_stack);
+                        loc.column_num += 2;
+                        output_stack.push(TokenValue::new(
+                            Token::Operator(Operator::DoubleEquals),
+                            loc.line_num,
+                            loc.column_num,
+                        ))
+                    }
+                    _ => {
+                        loc.column_num += 1;
+                        output_stack.push(TokenValue::new(
+                            Token::Operator(Operator::Equals),
+                            loc.line_num,
+                            loc.column_num,
+                        ))
+                    }
+                }
             }
             '!' => {
                 get_next(&mut input_stack);
@@ -460,7 +475,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
                     }
                     _ => {
                         panic!(
-                            "Expected an equals following a '!' on line {}, column {}.",
+                            "Expected an equals following a '!' on line {}, column {}. Note that the 'not' keyword should be used for the 'not' logical operator.",
                             loc.line_num, loc.column_num
                         );
                     }

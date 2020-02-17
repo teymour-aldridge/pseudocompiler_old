@@ -3,6 +3,7 @@ use indextree::{Arena, NodeId};
 
 pub enum Item {
     Function,
+    ParameterList(Vec<Item>),
     // The `String` is the name of the function being called.
     Call(String),
     Assign,
@@ -102,20 +103,28 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
                 let identifier = tokens.pop().unwrap();
                 match identifier.token {
                     Token::Identifier(name) => {
-                        operator_stack.push(TokenValue::new(Token::FunctionCall(name), identifier.loc.line_num, identifier.loc.column_num));
+                        operator_stack.push(TokenValue::new(
+                            Token::FunctionCall(name),
+                            identifier.loc.line_num,
+                            identifier.loc.column_num,
+                        ));
                     }
-                    _ => {
-                        panic!("Expected an identifier after the 'function' keyword on line {}, column {}.", identifier.loc.line_num, identifier.loc.column_num)
-                    }
+                    _ => panic!(
+                        "Expected an identifier after the 'function' keyword on line {}, \
+                         column {}.",
+                        identifier.loc.line_num, identifier.loc.column_num
+                    ),
                 }
                 let open_bracket = tokens.pop().unwrap();
                 match open_bracket.token {
                     Token::OpenBracket => {
                         operator_stack.push(open_bracket);
                     }
-                    _ => {
-                        panic!("Expected an opening bracket after the 'function' keyword on line {}, column {}.", open_bracket.loc.line_num, open_bracket.loc.column_num)
-                    }
+                    _ => panic!(
+                        "Expected an opening bracket after the 'function' keyword on \
+                         line {}, column {}.",
+                        open_bracket.loc.line_num, open_bracket.loc.column_num
+                    ),
                 }
                 let mut all_arguments = false;
                 while !all_arguments {
@@ -125,16 +134,20 @@ fn parse_expression(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<T
                             output_stack.push(argument);
                         }
                         Token::Comma => {}
-                        Token::EndOfSequence => {
-                            panic!("Expected a closing bracket after the function call on line {}, column {}.", next.loc.line_num, next.loc.column_num)
-                        }
+                        Token::EndOfSequence => panic!(
+                            "Expected a closing bracket after the function call on line {}, \
+                             column {}.",
+                            next.loc.line_num, next.loc.column_num
+                        ),
                         Token::CloseBracket => {
                             output_stack.push(argument);
                             all_arguments = true;
                         }
-                        _ => {
-                            panic!("Unexpected token after the 'function' keyword on line {}, column {}.", argument.loc.line_num, argument.loc.column_num)
-                        }
+                        _ => panic!(
+                            "Unexpected token after the 'function' keyword on line {}, \
+                             column {}.",
+                            argument.loc.line_num, argument.loc.column_num
+                        ),
                     }
                 }
             }
@@ -298,9 +311,11 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
                 Token::Keyword(Keyword::To) => {
                     e_1 = true;
                 }
-                Token::NewLine | Token::EndOfSequence => {
-                    panic!("Expected the 'to' keyword following 'for <variable>=<expression>' on line {}, column {}.", next_token.loc.line_num, next_token.loc.column_num)
-                }
+                Token::NewLine | Token::EndOfSequence => panic!(
+                    "Expected the 'to' keyword following 'for <variable>=<expression>' on \
+                     line {}, column {}.",
+                    next_token.loc.line_num, next_token.loc.column_num
+                ),
                 _ => expression_block_1.push(next_token),
             }
         }
@@ -312,9 +327,11 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
                 Token::Keyword(Keyword::Do) => {
                     e_2 = true;
                 }
-                Token::NewLine | Token::EndOfSequence => {
-                    panic!("Expected the 'do' keyword following 'for <variable>=<expression> to <expression>' on line {}, column {}.", next_token.loc.line_num, next_token.loc.column_num)
-                }
+                Token::NewLine | Token::EndOfSequence => panic!(
+                    "Expected the 'do' keyword following 'for <variable>=<expression> to \
+                     <expression>' on line {}, column {}.",
+                    next_token.loc.line_num, next_token.loc.column_num
+                ),
                 _ => expression_block_2.push(next_token),
             }
         }
@@ -330,9 +347,11 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
                 Token::Keyword(Keyword::Do) => {
                     found_do = true;
                 }
-                Token::EndOfSequence | Token::NewLine => {
-                    panic!("Expected the 'to' keyword following 'for <variable>=<expression>' on line {}, column {}.", next_token.loc.line_num, next_token.loc.column_num)
-                }
+                Token::EndOfSequence | Token::NewLine => panic!(
+                    "Expected the 'to' keyword following 'for <variable>=<expression>' on \
+                     line {}, column {}.",
+                    next_token.loc.line_num, next_token.loc.column_num
+                ),
                 _ => {
                     expression.push(next_token);
                 }
@@ -344,16 +363,60 @@ fn parse_for(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenVal
 }
 
 fn parse_function(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {
-    let function_node = arena.new_node(Node::new(Item::Function, tokens.iter().next().unwrap().loc));
+    let function_node =
+        arena.new_node(Node::new(Item::Function, tokens.iter().next().unwrap().loc));
     parent.append(function_node, arena);
     let identifier_token = tokens.pop().unwrap();
     match identifier_token.token {
         Token::Identifier(s) => {
-            let identifier_node = arena.new_node(Node::new(Item::Identifier(s), identifier_token.loc));
+            let identifier_node =
+                arena.new_node(Node::new(Item::Identifier(s), identifier_token.loc));
             function_node.append(identifier_node, arena);
         }
         _ => {
-            panic!("Expected an identifier after the 'function' keyword on line {}, column {}.", identifier_token.loc.line_num, identifier_token.loc.column_num);
+            panic!(
+                "Expected an identifier after the 'function' keyword on line {}, column {}.",
+                identifier_token.loc.line_num, identifier_token.loc.column_num
+            );
+        }
+    }
+    let open_bracket = tokens.pop().unwrap();
+    match open_bracket.token {
+        Token::OpenBracket => {}
+        _ => {
+            panic!(
+                "Expected an opening bracket after the function declaration on line {}, column {}.",
+                open_bracket.loc.line_num, open_bracket.loc.column_num
+            );
+        }
+    }
+    let mut parameter_list: Vec<Item> = Vec::new();
+    loop {
+        let next_token = tokens.pop().unwrap();
+        match next_token.token {
+            Token::CloseBracket => break,
+            Token::Identifier(s) => parameter_list.push(Item::Identifier(s)),
+            Token::Comma => {}
+            _ => {
+                panic!(
+                    "Unexpected token on line {}, column {}.",
+                    next_token.loc.line_num, next_token.loc.column_num
+                );
+            }
+        }
+    }
+    let parameter_list_node = arena.new_node(Node::new(
+        Item::ParameterList(parameter_list),
+        open_bracket.loc,
+    ));
+    let new_line = tokens.pop().unwrap();
+    match new_line.token {
+        Token::NewLine => {}
+        _ => {
+            panic!(
+                "Expected a new line on line {}, column {}.",
+                new_line.loc.line_num, new_line.loc.column_num
+            );
         }
     }
 }

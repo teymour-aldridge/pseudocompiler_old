@@ -47,15 +47,13 @@ fn double_equals() {
     assert!(
         value.token
             == Token::Literal(LiteralValue::Number(Number {
-            base: String::from("1"),
-            decimal: None,
-            exponent: None,
-        }))
+                base: String::from("1"),
+                decimal: None,
+                exponent: None,
+            }))
     );
     assert!(eos.token == Token::EndOfSequence);
 }
-
-
 
 #[test]
 fn divide() {

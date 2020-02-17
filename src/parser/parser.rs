@@ -421,8 +421,6 @@ fn parse_function(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<Tok
     }
 }
 
-fn parse_function_call(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<TokenValue>) {}
-
 fn parse_block(
     indentation: i32,
     parent: &NodeId,

@@ -36,6 +36,28 @@ fn assignment() {
 }
 
 #[test]
+fn double_equals() {
+    let mut output = lexer(&String::from("x==1"));
+    let identifier = output.get(0).unwrap();
+    let equals = output.get(1).unwrap();
+    let value = output.get(2).unwrap();
+    let eos = output.get(3).unwrap();
+    assert!(identifier.token == Token::Identifier(String::from("x")));
+    assert!(equals.token == Token::Operator(Operator::DoubleEquals));
+    assert!(
+        value.token
+            == Token::Literal(LiteralValue::Number(Number {
+            base: String::from("1"),
+            decimal: None,
+            exponent: None,
+        }))
+    );
+    assert!(eos.token == Token::EndOfSequence);
+}
+
+
+
+#[test]
 fn divide() {
     let mut output = lexer(&String::from("x/y"));
     assert!(output.get(0).unwrap().token == Token::Identifier(String::from("x")));

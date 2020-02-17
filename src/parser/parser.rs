@@ -18,6 +18,7 @@ pub enum Item {
     For,
     Body,
     Program,
+    Block,
 }
 
 pub fn priority(o: &TokenValue) -> u32 {
@@ -420,7 +421,10 @@ fn parse_function(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<Tok
             );
         }
     }
-    let block_node = arena.new_node(Node::new(Item::Block, Loc::new(new_line.loc.line_numn + 1, 0)));
+    let block_node = arena.new_node(Node::new(
+        Item::Block,
+        Loc::new(new_line.loc.line_numn + 1, 0),
+    ));
     parse_block(1, &block_node, arena, tokens);
 }
 

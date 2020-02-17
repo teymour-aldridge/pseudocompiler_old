@@ -36,6 +36,8 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: rust-binary
+      - name: Checkout repository
+        uses: actions/checkout@master
       - name: Install dependencies
         run: cd app && npm install && cd ../
       - name: Build

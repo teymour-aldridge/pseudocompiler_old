@@ -519,15 +519,20 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
 			}
 			'\\' => {
 				get_next(&mut input_stack);
-				let peek_next = input_stack.chars().next().unwrap();
-				match peek_next {
-					'\n' => {
-						get_next(&mut input_stack);
+				loop {
+					let peek_next = input_stack.chars().next().unwrap();
+					match peek_next {
+						'\n' => {
+							get_next(&mut input_stack);
+							break;
+						}
+						' ' => {}
+						_ => panic!(
+							"Expected a new line (or space) following the backslash on line {}, \
+							 column {}.",
+							loc.line_num, loc.column_num
+						),
 					}
-					_ => panic!(
-						"Expected a new line following the backslash on line {}, column {}.",
-						loc.line_num, loc.column_num
-					),
 				}
 			}
 			_ => panic!(

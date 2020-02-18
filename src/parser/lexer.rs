@@ -517,7 +517,17 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
 					}
 				}
 			}
-			'\\' => {}
+			'\\' => {
+				get_next(&mut input_stack);
+				let peek_next = input_stack.chars().next().unwrap();
+				match peek_next.token {
+					'\n' => get_next(&mut input_stack),
+					_ => panic!(
+						"Expected a new line following the backslash on line {}, column {}.",
+						loc.line_num, loc.column_num
+					),
+				}
+			}
 			_ => panic!(
 				"Found an invalid token {} at line {}, column {}.",
 				top, loc.line_num, loc.column_num

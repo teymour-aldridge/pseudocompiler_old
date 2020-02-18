@@ -21,5 +21,5 @@ mod transpiler;
 pub fn compile(input: String) -> String {
     let mut lexed = lexer(&input);
     let (mut parser_output, start_node) = parser::parser::parser(&mut lexed);
-    from_tree(parser_output, start_node)
+    return from_tree(parser_output, start_node);
 }

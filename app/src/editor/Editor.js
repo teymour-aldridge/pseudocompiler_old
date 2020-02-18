@@ -9,7 +9,8 @@ class Editor extends React.Component {
         super(props);
         this.state = {
             code: "",
-            wasm: {}
+            wasm: {},
+            windowSize: [0, 0]
         };
         this.loadWasm = this.loadWasm.bind(this);
     }
@@ -33,8 +34,8 @@ class Editor extends React.Component {
             <div className="Editor">
                 <AceEditor
                     mode="batchfile"
-                    width={window.outerWidth < 500 ? (window.outerWidth - 50).toString() + 'px' : (window.outerWidth / 2).toString() + 'px'}
                     theme="github"
+                    width="100%"
                     name="editor"
                     value={this.state.code}
                     onChange={value => {
@@ -47,7 +48,7 @@ class Editor extends React.Component {
             <div className="ControlPanel">
                 <button onClick={event => {
                     event.preventDefault();
-                    eval(wasm.compile(this.state.code));
+                    console.log(wasm.compile(this.state.code))
                 }
                 }>RUN CODE
                 </button>

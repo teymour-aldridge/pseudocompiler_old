@@ -469,7 +469,7 @@ fn parse_statement(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<To
 		}
 		Token::EndOfSequence => {}
 		_ => panic!(
-			"Unexpected term on line {}, column {}.",
+			"Unexpected token on line {}, column {}.",
 			lexitem.loc.line_num, lexitem.loc.column_num
 		),
 	}

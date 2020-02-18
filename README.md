@@ -38,6 +38,9 @@ The `parser` directory stored both the lexer and the parser (which are in the fi
 
 The `transpiler` directory stores the code for the transpilation to other languages (LLVM and JS). Currently no attempts have been made to translate to LLVM. Translation to JS is a little bit further in the works, but still a way of being complete.
 
+## Frontend code organisation
+The web interface is a React app (created initially with `create-react-app`). Components sit in their own folders (everything is grouped around them, rather than being separated into different folders for view, state, CSS styling, etc). 
+
 # Language specification
 This still hasn't completely been worked out. 
 

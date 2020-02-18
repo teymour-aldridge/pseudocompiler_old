@@ -12,6 +12,7 @@ At present, you will have to either use the web frontend or build the compiler f
 If you'd like to contribute there are a few things which would be useful:
 * Adding more tests to the compiler (in the `src` directory, under the `tests` subdirectory).
 * The [recursive descent parser](https://en.wikipedia.org/wiki/Recursive_descent_parser) is currently a bit of a mess and could do with some being worked upon.
+* There are two languages we want to compile to. These are LLVM IR and Javascript. Help working upon this would be useful.
 * Building the frontend (in React). This is still being worked upon.
 
 Please note that we adopt the Contributor Covenant Code of Conduct. 
@@ -24,6 +25,18 @@ This repository serves as a monorepo. It is laid out something like this:
 ```
 The `app` directory contains the code for a web frontend for the compiler which uses React (and WebAssembly to build the compiler for the web).
 The `src` directory contains the code for the actual compiler, written in Rust.
+
+## Compiler code organisation
+The compiler's code is organised something like this:
+```
+src/
+ - parser
+ - transpiler
+ - tests
+```
+The `parser` directory stored both the lexer and the parser (which are in the files `lexer.rs` and `parser.rs` respectively). They also include useful enums and structs. 
+
+The `transpiler` directory stores the code for the transpilation to other languages (LLVM and JS). Currently no attempts have been made to translate to LLVM. Translation to JS is a little bit further in the works, but still a way of being complete.
 
 # Language specification
 This still hasn't completely been worked out. 

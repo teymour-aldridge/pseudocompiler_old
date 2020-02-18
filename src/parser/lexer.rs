@@ -80,6 +80,10 @@ pub enum Operator {
 	DoubleEquals,
 	In,
 	NotEquals,
+	GreaterThan,
+	LessThan,
+	GreaterThanOrEqualTo,
+	LessThanOrEqualTo,
 	// Not used as part of the lexer (only in the parser)
 	Empty,
 }
@@ -469,6 +473,51 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
 					loc.column_num,
 				))
 			}
+			'>' => {
+				get_next(&mut input_stack);
+				let peek_next = input_stack.chars().next().unwrap();
+				match peek_next {
+					'=' => {
+						get_next(&mut input_stack);
+						loc.column_num += 2;
+						output_stack.push(TokenValue::new(
+							Token::Operator(Operator::GreaterThanOrEqualTo),
+							loc.column_num,
+							loc.line_num,
+						));
+					}
+					_ => {
+						output_stack.push(TokenValue::new(
+							Token::Operator(Operator::GreaterThan),
+							loc.column_num,
+							loc.line_num,
+						));
+					}
+				}
+			}
+			'<' => {
+				get_next(&mut input_stack);
+				let peek_next = input_stack.chars().next().unwrap();
+				match peek_next {
+					'=' => {
+						get_next(&mut input_stack);
+						loc.column_num += 2;
+						output_stack.push(TokenValue::new(
+							Token::Operator(Operator::LessThanOrEqualTo),
+							loc.column_num,
+							loc.line_num,
+						));
+					}
+					_ => {
+						output_stack.push(TokenValue::new(
+							Token::Operator(Operator::LessThan),
+							loc.column_num,
+							loc.line_num,
+						));
+					}
+				}
+			}
+			'\\' => {}
 			_ => panic!(
 				"Found an invalid token {} at line {}, column {}.",
 				top, loc.line_num, loc.column_num

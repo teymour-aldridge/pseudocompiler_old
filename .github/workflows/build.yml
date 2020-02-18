@@ -32,13 +32,13 @@ jobs:
     needs: build-rust
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@master
       - name: Download Rust binary
         uses: actions/download-artifact@v1
         with:
           name: rust-binary
           path: pkg
-      - name: Checkout repository
-        uses: actions/checkout@master
       - name: Install dependencies
         run: cd app && npm install && cd ../
       - name: Build

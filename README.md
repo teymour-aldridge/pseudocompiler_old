@@ -11,6 +11,7 @@ At present, you will have to either use the web frontend or build the compiler f
 # Contributing
 If you'd like to contribute there are a few things which would be useful:
 * Adding more tests to the compiler (in the `src` directory, under the `tests` subdirectory).
+* The [recursive descent parser](https://en.wikipedia.org/wiki/Recursive_descent_parser) is currently a bit of a mess and could do with some being worked upon.
 * Building the frontend (in React). This is still being worked upon.
 
 Please note that we adopt the Contributor Covenant Code of Conduct. 

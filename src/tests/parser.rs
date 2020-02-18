@@ -13,9 +13,5 @@ fn test_parser() {
     assert!(identifier.item == parser::Item::Identifier(String::from("x")));
     let operand_node = tree.get(assign_operator).unwrap().last_child().unwrap();
     let operand = tree.get(operand_node).unwrap().get();
-    assert!(operand.item == parser::Item::Number(Number {
-        base: String::from("1"),
-        exponent: None,
-        decimal: None
-    }))
+    assert!(operand.item == parser::Item::Expression);
 }

@@ -489,7 +489,7 @@ fn parse_statement(
 
 					assign_node.append(var_name, arena);
 					assign_node.append(assign_expression, arena);
-
+					println!("{:?}", tokens);
 					parse_expression(indentation, &assign_expression, arena, tokens)
 				}
 				Token::NewLine => {}

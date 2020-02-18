@@ -531,6 +531,10 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
 					}
 				}
 			}
+			'\t' => {
+				get_next(&mut input_stack);
+				output_stack.push(TokenValue::new(Token::Tab, loc.line_num, loc.column_num));
+			}
 			'\\' => {
 				get_next(&mut input_stack);
 				loop {

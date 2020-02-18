@@ -518,15 +518,15 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
 						loc.column_num += 2;
 						output_stack.push(TokenValue::new(
 							Token::Operator(Operator::LessThanOrEqualTo),
-							loc.column_num,
 							loc.line_num,
+							loc.column_num,
 						));
 					}
 					_ => {
 						output_stack.push(TokenValue::new(
 							Token::Operator(Operator::LessThan),
-							loc.column_num,
 							loc.line_num,
+							loc.column_num,
 						));
 					}
 				}

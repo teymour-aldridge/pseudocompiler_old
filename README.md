@@ -1,4 +1,8 @@
 # Pseudocompiler
+![](https://github.com/teymour-aldridge/pseudocompiler/workflows/Build/badge.svg)
+![](https://github.com/teymour-aldridge/pseudocompiler/workflows/Tests/badge.svg)
+[![Run on Repl.it](https://repl.it/badge/github/teymour-aldridge/pseudocompiler)](https://repl.it/github/teymour-aldridge/pseudocompiler)
+
 A compiler for pseudocode, inspired by the [OCR specification](https://www.ocr.org.uk/Images/202654-pseudocode-guide.pdf) [[backup link](https://web.archive.org/web/20200118155656/https://www.ocr.org.uk/Images/202654-pseudocode-guide.pdf)].
 
 # Getting started

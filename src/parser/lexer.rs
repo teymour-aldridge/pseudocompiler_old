@@ -255,6 +255,11 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
 								loc.line_num,
 								loc.column_num,
 							)),
+							"then" => output_stack.push(TokenValue::new(
+								Token::Keyword(Keyword::Then),
+								loc.line_num,
+								loc.column_num,
+							)),
 							_ => output_stack.push(TokenValue::new(
 								Token::Identifier(String::from(&identifier)),
 								loc.line_num,
@@ -269,6 +274,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
 				let mut finished = false;
 				let mut number = Number::new();
 				let mut state = NumberState::new();
+				let mut new_line = false;
 				while !finished {
 					if input_stack.len() > 0 {
 						top = get_next(&mut input_stack);
@@ -315,6 +321,7 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
 							'\n' => {
 								loc.line_num += 1;
 								finished = true;
+								new_line = true;
 							}
 							_ => panic!(
 								"Unexpected token {} on line {}, column {}.",
@@ -331,6 +338,13 @@ pub fn lexer(input: &String) -> Vec<TokenValue> {
 								&number.decimal,
 								&number.base,
 							))),
+							loc.line_num,
+							loc.column_num,
+						));
+					}
+					if new_line {
+						output_stack.push(TokenValue::new(
+							Token::NewLine,
 							loc.line_num,
 							loc.column_num,
 						));

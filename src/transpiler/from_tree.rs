@@ -14,6 +14,6 @@ fn transpile_while(while_node: &NodeId, arena: &mut Arena<Node>, output: &mut St
 fn transpile_for(for_node: &NodeId, arena: &mut Arena<Node>, output: &mut String) {}
 
 pub fn from_tree(tree: Arena<Node>, start_node: NodeId) -> String {
-    let mut output = String::new();
-    output
+	let mut output = String::new();
+	output
 }

@@ -3,6 +3,7 @@ use indextree::{Arena, NodeId};
 
 #[derive(Debug)]
 #[derive(Clone)]
+#[derive(PartialEq)]
 pub enum Item {
 	Function,
 	ParameterList(Vec<Item>),
@@ -82,8 +83,8 @@ fn get_next_token(tokens: &mut Vec<TokenValue>) -> TokenValue {
 #[derive(Debug)]
 #[derive(Clone)]
 pub struct Node {
-	loc: Loc,
-	item: Item,
+	pub loc: Loc,
+	pub item: Item,
 }
 
 impl Node {

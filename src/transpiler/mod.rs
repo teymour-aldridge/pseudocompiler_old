@@ -3,6 +3,7 @@ use std::process::Output;
 
 use lazy_static::lazy_static;
 use regex::Regex;
+pub mod from_tree;
 /*
 lazy_static! {
 	static ref FUNCTION: Regex = Regex::new(r"function [\w]+\([\w ,]+\)").unwrap();

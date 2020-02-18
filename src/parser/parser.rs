@@ -475,9 +475,9 @@ fn parse_statement(parent: &NodeId, arena: &mut Arena<Node>, tokens: &mut Vec<To
 	}
 }
 
-pub fn parser(tokens: &mut Vec<TokenValue>) -> Arena<Node> {
+pub fn parser(tokens: &mut Vec<TokenValue>) -> (Arena<Node>, NodeId) {
 	let arena = &mut Arena::new();
 	let program_node = arena.new_node(Node::new(Item::Program, Loc::new(0, 0)));
 	parse_statement(&program_node, arena, tokens);
-	arena.clone()
+	(arena.clone(), program_node)
 }
